@@ -1,0 +1,45 @@
+Selected own AVD serial: emulator-5554
+$ adb -s emulator-5554 shell getprop sys.boot_completed
+1
+
+Exit code: 0
+$ adb -s emulator-5554 shell getprop ro.build.version.sdk
+34
+
+Exit code: 0
+$ adb -s emulator-5554 shell pm list packages
+package:ai.pleos.connecttokensampleapp
+package:ai.pleos.welcomescreen
+package:ai.pleos.playground.service.location.fused
+package:ai.pleos.playground.service.navi
+package:ai.pleos.servicemodepro
+package:ai.pleos.playground.service.adas
+package:ai.pleos.multimedia.mediabridge
+package:ai.pleos.service.car
+package:ai.pleos.system.service.wifi
+package:ai.pleos.connectwebconsole
+package:ai.pleos.android.webview
+package:ai.pleos.service.profile
+package:ai.pleos.gleoai.model.provider
+package:ai.pleos.service.ui
+package:ai.pleos.service
+package:ai.pleos.playground.service.sync
+package:ai.pleos.hardware.vehicle.emulator
+package:ai.pleos.playground.service.vehicle
+package:ai.pleos.playground.caas
+package:ai.pleos.theme.connect
+package:ai.umos.maps.android.navigation.app
+package:ai.pleos.playground.service.cap
+package:ai.pleos.system.update.broadcast
+package:ai.pleos.service.trustagent
+package:ai.pleos.system.service.hid
+package:ai.pleos.system.service.logcat_broker
+Exit code: 0
+
+$ adb -s emulator-5554 install -r automotive/build/outputs/apk/debug/automotive-debug.apk
+Performing Streamed Install
+Success
+
+Exit code: 0
+
+Cleanup: own read-only emulator-5554 stopped with adb emu kill after verification.

@@ -1,0 +1,8 @@
+$ npm run test:smoke
+
+> babmatj-monorepo@0.1.0 test:smoke
+> node scripts/smoke.mjs
+
+PASS: Next.js page, web → NestJS health, API outage response
+
+Exit code: 0

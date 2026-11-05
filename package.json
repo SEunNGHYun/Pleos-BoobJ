@@ -1,0 +1,33 @@
+{
+  "name": "babmatj-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.9.0"
+  },
+  "workspaces": [
+    "contracts",
+    "server",
+    "restaurant-web",
+    "supabase/tests"
+  ],
+  "scripts": {
+    "predev": "npm run build --workspace @babmatj/contracts",
+    "dev": "concurrently --kill-others --names api,web \"npm run dev --workspace @babmatj/server\" \"npm run dev --workspace @babmatj/restaurant-web\"",
+    "dev:server": "npm run build --workspace @babmatj/contracts && npm run dev --workspace @babmatj/server",
+    "dev:web": "npm run build --workspace @babmatj/contracts && npm run dev --workspace @babmatj/restaurant-web",
+    "build": "npm run build --workspaces --if-present",
+    "pretypecheck": "npm run build --workspace @babmatj/contracts",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run build --workspace @babmatj/contracts && npm run build --workspace @babmatj/server && npm run test:api && npm run test:db",
+    "test:api": "npm run test --workspace @babmatj/server",
+    "test:db": "npm run test --workspace babmatj-database-tests",
+    "test:smoke": "node scripts/smoke.mjs",
+    "local:setup": "npm run build --workspace @babmatj/contracts && npm run build --workspace @babmatj/server && npm run local:setup --workspace @babmatj/server"
+  },
+  "devDependencies": {
+    "concurrently": "10.0.6",
+    "typescript": "5.9.3",
+    "@types/node": "22.19.15"
+  }
+}

@@ -1,0 +1,92 @@
+$ JAVA_HOME=<Android Studio JBR> ./gradlew :mobile:testDebugUnitTest :automotive:testDebugUnitTest --offline --rerun-tasks
+Calculating task graph as no cached configuration is available for tasks: :mobile:testDebugUnitTest :automotive:testDebugUnitTest
+> Task :automotive:preBuild UP-TO-DATE
+> Task :shared:preBuild UP-TO-DATE
+> Task :mobile:preBuild UP-TO-DATE
+> Task :automotive:preDebugUnitTestBuild UP-TO-DATE
+> Task :mobile:preDebugBuild UP-TO-DATE
+> Task :automotive:preDebugBuild UP-TO-DATE
+> Task :mobile:preDebugUnitTestBuild UP-TO-DATE
+> Task :shared:preDebugBuild UP-TO-DATE
+> Task :shared:generateDebugResources
+> Task :automotive:generateDebugResources
+> Task :mobile:mapDebugSourceSetPaths
+> Task :mobile:generateDebugResources
+> Task :shared:processDebugNavigationResources
+> Task :mobile:createDebugCompatibleScreenManifests
+> Task :shared:writeDebugAarMetadata
+> Task :automotive:javaPreCompileDebugUnitTest
+> Task :mobile:javaPreCompileDebugUnitTest
+> Task :shared:javaPreCompileDebug
+> Task :mobile:processDebugNavigationResources
+> Task :mobile:javaPreCompileDebug
+> Task :shared:mapDebugSourceSetPaths
+> Task :mobile:extractDeepLinksDebug
+> Task :shared:extractDeepLinksDebug
+> Task :automotive:processDebugNavigationResources
+> Task :automotive:createDebugCompatibleScreenManifests
+> Task :automotive:mapDebugSourceSetPaths
+> Task :automotive:javaPreCompileDebug
+> Task :automotive:extractDeepLinksDebug
+> Task :mobile:compileDebugNavigationResources
+> Task :automotive:compileDebugNavigationResources
+> Task :automotive:checkDebugAarMetadata
+> Task :mobile:checkDebugAarMetadata
+> Task :shared:packageDebugResources
+> Task :automotive:packageDebugResources
+> Task :mobile:packageDebugResources
+> Task :shared:compileDebugLibraryResources
+> Task :shared:parseDebugLocalResources
+> Task :shared:processDebugManifest
+> Task :automotive:parseDebugLocalResources
+> Task :mobile:parseDebugLocalResources
+> Task :automotive:generateDebugRFile
+> Task :shared:generateDebugRFile
+> Task :mobile:generateDebugRFile
+> Task :automotive:processDebugMainManifest
+> Task :mobile:processDebugMainManifest
+> Task :mobile:processDebugManifest
+> Task :automotive:processDebugManifest
+> Task :mobile:processDebugManifestForPackage
+> Task :automotive:processDebugManifestForPackage
+> Task :automotive:mergeDebugResources
+> Task :mobile:mergeDebugResources
+> Task :mobile:processDebugResources
+> Task :automotive:processDebugResources
+> Task :shared:compileDebugKotlin
+> Task :shared:compileDebugJavaWithJavac NO-SOURCE
+> Task :shared:processDebugJavaRes
+> Task :shared:bundleLibRuntimeToJarDebug
+> Task :shared:bundleLibCompileToJarDebug
+> Task :automotive:compileDebugKotlin NO-SOURCE
+> Task :automotive:compileDebugJavaWithJavac NO-SOURCE
+> Task :automotive:processDebugJavaRes NO-SOURCE
+> Task :automotive:bundleDebugClassesToRuntimeJar
+> Task :automotive:bundleDebugClassesToCompileJar
+> Task :automotive:compileDebugUnitTestKotlin
+> Task :automotive:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :automotive:processDebugUnitTestJavaRes
+> Task :automotive:testDebugUnitTest
+> Task :mobile:compileDebugKotlin
+> Task :mobile:compileDebugJavaWithJavac NO-SOURCE
+> Task :mobile:processDebugJavaRes
+> Task :mobile:bundleDebugClassesToCompileJar
+> Task :mobile:bundleDebugClassesToRuntimeJar
+> Task :mobile:compileDebugUnitTestKotlin
+> Task :mobile:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :mobile:processDebugUnitTestJavaRes
+> Task :mobile:testDebugUnitTest
+
+[Incubating] Problems report is available at: file:///Users/yunseunghyeon/Desktop/hyundai/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.5.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 5s
+61 actionable tasks: 61 executed
+Configuration cache entry stored.
+
+Exit code: 0
