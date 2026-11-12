@@ -1,0 +1,141 @@
+Starting a Gradle Daemon (subsequent builds will be faster)
+Calculating task graph as no cached configuration is available for tasks: :automotive:assembleDebug :mobile:assembleDebug :automotive:testDebugUnitTest :mobile:testDebugUnitTest
+> Task :mobile:generateDebugAssets UP-TO-DATE
+> Task :shared:generateDebugAssets UP-TO-DATE
+> Task :automotive:preBuild UP-TO-DATE
+> Task :automotive:generateDebugAssets UP-TO-DATE
+> Task :shared:preBuild UP-TO-DATE
+> Task :mobile:preBuild UP-TO-DATE
+> Task :automotive:preDebugBuild UP-TO-DATE
+> Task :shared:preDebugBuild UP-TO-DATE
+> Task :automotive:preDebugUnitTestBuild UP-TO-DATE
+> Task :mobile:preDebugBuild UP-TO-DATE
+> Task :automotive:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :automotive:generateDebugResources
+> Task :shared:processDebugNavigationResources
+> Task :shared:generateDebugResources
+> Task :automotive:desugarDebugFileDependencies
+> Task :automotive:mapDebugSourceSetPaths
+> Task :automotive:createDebugCompatibleScreenManifests
+> Task :automotive:extractDeepLinksDebug
+> Task :shared:mergeDebugAssets
+> Task :shared:extractDeepLinksDebug
+> Task :automotive:packageDebugResources
+> Task :shared:mapDebugSourceSetPaths
+> Task :shared:writeDebugAarMetadata
+> Task :shared:packageDebugResources
+> Task :automotive:javaPreCompileDebug
+> Task :automotive:processDebugNavigationResources
+> Task :shared:javaPreCompileDebug
+> Task :automotive:mergeDebugAssets
+> Task :automotive:mergeDebugJniLibFolders
+> Task :automotive:checkDebugDuplicateClasses
+> Task :automotive:compressDebugAssets
+> Task :automotive:compileDebugNavigationResources
+> Task :shared:mergeDebugJniLibFolders
+> Task :automotive:checkDebugAarMetadata
+> Task :automotive:writeDebugAppMetadata
+> Task :shared:mergeDebugNativeLibs NO-SOURCE
+> Task :automotive:validateSigningDebug
+> Task :automotive:writeDebugSigningConfigVersions
+> Task :mobile:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :mobile:generateDebugResources
+> Task :automotive:parseDebugLocalResources
+> Task :shared:parseDebugLocalResources
+> Task :shared:copyDebugJniLibsProjectOnly
+> Task :mobile:packageDebugResources
+> Task :shared:processDebugManifest
+> Task :mobile:javaPreCompileDebug
+> Task :automotive:mergeDebugNativeLibs NO-SOURCE
+> Task :automotive:stripDebugDebugSymbols NO-SOURCE
+> Task :mobile:processDebugNavigationResources
+> Task :mobile:mergeDebugAssets
+> Task :mobile:compressDebugAssets
+> Task :automotive:generateDebugRFile
+> Task :mobile:desugarDebugFileDependencies
+> Task :shared:generateDebugRFile
+> Task :mobile:parseDebugLocalResources
+> Task :mobile:generateDebugRFile
+> Task :mobile:mapDebugSourceSetPaths
+> Task :mobile:checkDebugAarMetadata
+> Task :mobile:compileDebugNavigationResources
+> Task :mobile:createDebugCompatibleScreenManifests
+> Task :mobile:checkDebugDuplicateClasses
+> Task :mobile:extractDeepLinksDebug
+> Task :shared:compileDebugLibraryResources
+> Task :automotive:processDebugMainManifest
+> Task :mobile:mergeDebugJniLibFolders
+> Task :mobile:mergeDebugNativeLibs
+
+> Task :mobile:stripDebugDebugSymbols
+Unable to strip the following libraries, packaging them as they are: libandroidx.graphics.path.so. Run with --info option to learn more.
+
+> Task :mobile:validateSigningDebug
+> Task :mobile:writeDebugAppMetadata
+> Task :mobile:writeDebugSigningConfigVersions
+> Task :automotive:javaPreCompileDebugUnitTest
+> Task :mobile:preDebugUnitTestBuild UP-TO-DATE
+> Task :mobile:processDebugMainManifest
+> Task :mobile:javaPreCompileDebugUnitTest
+> Task :automotive:processDebugManifest
+> Task :mobile:processDebugManifest
+> Task :mobile:processDebugManifestForPackage
+> Task :automotive:processDebugManifestForPackage
+> Task :automotive:mergeDebugResources
+> Task :mobile:mergeDebugResources
+> Task :automotive:processDebugResources
+> Task :mobile:processDebugResources
+> Task :mobile:generateDebugGlobalSynthetics
+> Task :automotive:generateDebugGlobalSynthetics
+> Task :automotive:mergeExtDexDebug
+> Task :mobile:mergeExtDexDebug
+> Task :shared:compileDebugKotlin
+> Task :shared:compileDebugJavaWithJavac NO-SOURCE
+> Task :shared:processDebugJavaRes
+> Task :shared:bundleLibRuntimeToDirDebug
+> Task :shared:bundleLibRuntimeToJarDebug
+> Task :shared:bundleLibCompileToJarDebug
+> Task :automotive:compileDebugKotlin NO-SOURCE
+> Task :automotive:compileDebugJavaWithJavac NO-SOURCE
+> Task :automotive:processDebugJavaRes NO-SOURCE
+> Task :automotive:bundleDebugClassesToRuntimeJar
+> Task :automotive:bundleDebugClassesToCompileJar
+> Task :mobile:mergeLibDexDebug
+> Task :automotive:mergeLibDexDebug
+> Task :automotive:dexBuilderDebug
+> Task :automotive:mergeProjectDexDebug
+> Task :automotive:mergeDebugJavaResource
+> Task :automotive:compileDebugUnitTestKotlin
+> Task :automotive:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :automotive:processDebugUnitTestJavaRes
+> Task :automotive:packageDebug
+> Task :automotive:assembleDebug
+> Task :automotive:createDebugApkListingFileRedirect
+> Task :mobile:compileDebugKotlin
+> Task :mobile:compileDebugJavaWithJavac NO-SOURCE
+> Task :mobile:processDebugJavaRes
+> Task :mobile:bundleDebugClassesToCompileJar
+> Task :mobile:bundleDebugClassesToRuntimeJar
+> Task :mobile:dexBuilderDebug
+> Task :mobile:mergeProjectDexDebug
+> Task :automotive:testDebugUnitTest
+> Task :mobile:compileDebugUnitTestKotlin
+> Task :mobile:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :mobile:processDebugUnitTestJavaRes
+> Task :mobile:mergeDebugJavaResource
+> Task :mobile:packageDebug
+> Task :mobile:assembleDebug
+> Task :mobile:createDebugApkListingFileRedirect
+> Task :mobile:testDebugUnitTest
+
+[Incubating] Problems report is available at: file:///Users/yunseunghyeon/Desktop/hyundai/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.5.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 12s
+99 actionable tasks: 99 executed
+Configuration cache entry stored.

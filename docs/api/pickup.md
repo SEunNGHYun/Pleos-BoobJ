@@ -48,8 +48,8 @@ owner 토큰으로 `POST /api/restaurants`, Content-Type: application/json.
     {"name":"후문 픽업존","address":"후문 지정 픽업존","latitude":37.51,"longitude":127.01,"instructions":"지정 주차구역에서 수령"}
   ],
   "menus": [
-    {"name":"제육덮밥","priceKrw":10000},
-    {"name":"비빔밥","priceKrw":9000}
+    {"name":"제육덮밥","priceKrw":10000,"baseCookMinutes":15},
+    {"name":"비빔밥","priceKrw":9000,"baseCookMinutes":10}
   ]
 }
 ```
@@ -118,3 +118,5 @@ npm run test:smoke
 ```
 
 HTTP 테스트는 임시 DB에서 식당 등록→주문 생성→조회, 가격/사용자 위조 차단, 식당 간 참조 차단, 비활성 메뉴/접수 중지, 요청 재전송, DB 재시작 후 주문 보존을 검증한다. 실제 Supabase REST/JWT 및 독립 PostgreSQL 연결 경쟁 요청 검증은 포함하지 않는다.
+
+메뉴의 `baseCookMinutes`는 선택 입력이며 1~240분의 정수다. 기존 메뉴처럼 값이 없으면 메뉴 조회에서 null을 반환한다. 차량 앱은 선택한 모든 메뉴의 값이 있을 때 최장 시간을 주문 전체의 예상 준비시간으로 표시한다. 실제 조리 일정은 식당이 수락 시 입력하는 주문 전체 조리시간을 사용한다.

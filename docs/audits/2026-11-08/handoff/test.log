@@ -1,0 +1,83 @@
+
+> babmatj-monorepo@0.1.0 test
+> npm run build --workspace @babmatj/contracts && npm run build --workspace @babmatj/server && npm run test:api && npm run test:db
+
+
+> @babmatj/contracts@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> @babmatj/server@0.1.0 build
+> tsc -p tsconfig.json
+
+
+> babmatj-monorepo@0.1.0 test:api
+> npm run test --workspace @babmatj/server
+
+
+> @babmatj/server@0.1.0 test
+> node --test test/*.test.mjs
+
+✔ HTTP health reports service availability without claiming database connectivity (159.421791ms)
+✔ register restaurant and create an order with selected pickup snapshot and server-priced items (713.95125ms)
+✔ authentication, ownership and strict input validation prevent forged orders and data access (378.718458ms)
+✔ cross-restaurant selections, inactive menus and closed restaurants reject without saving orders (378.31825ms)
+✔ local database persists orders and migration history across reopen (680.460375ms)
+✔ local development authentication and DB cannot be enabled in production (0.355375ms)
+▶ minimal order creation requirements: HTTP results and persisted database state
+  ✔ valid menu quantities save the selected pickup and initial statuses and return order ID (7.234375ms)
+  ✔ nonexistent but well-formed menu UUID is rejected without saving any order or item (3.654916ms)
+  ✔ nonexistent restaurant returns 404 without saving an order (3.285625ms)
+  ✔ quantity zero and negative quantity are rejected without database changes (5.33275ms)
+  ✔ empty order items are rejected without database changes (2.85825ms)
+  ✔ pickup location belonging to a different restaurant is rejected (3.011916ms)
+  ✔ same request key replays the order; changed payload conflicts without duplicate rows (5.738375ms)
+✔ minimal order creation requirements: HTTP results and persisted database state (449.213292ms)
+✔ restaurant receipt: own list, acceptance and rejection with atomic cooking reservations (458.3825ms)
+✔ restaurant receipt rejects unauthorized, invalid or missing ETA and rolls back booking failures (435.112083ms)
+✔ restaurant receipt idempotency survives DB reopen (606.475583ms)
+✔ two vehicles competing for one pickup window commit only one reservation (446.045917ms)
+✔ configured pickup capacity and handoff duration control the available windows (420.379292ms)
+﹣ manual pickup lifecycle with MOCK ETA, cancellation and completion replay (0.083916ms) # SKIP
+✔ an unbooked slot is a proposal and only an existing reservation is confirmed (0.614125ms)
+✔ collisions across multiple slots advance to the first gap and allow adjacent boundaries (0.338917ms)
+✔ late ETA retains the confirmed booking until a new proposal is approved (0.052417ms)
+✔ LOCKED, COOKING and READY preserve the stored start across ETA changes (0.084125ms)
+✔ cancelled bookings free capacity and cancellation of the current booking stops planning (0.05275ms)
+✔ actual occupancy blocks proposals even beyond the planned end (0.044709ms)
+✔ preparation must fit from now and invalid inputs fail (0.1595ms)
+✔ parallel callers get proposals only; a subsequent snapshot detects the committed slot (0.052083ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 5023.076417
+
+> babmatj-monorepo@0.1.0 test:db
+> npm run test --workspace babmatj-database-tests
+
+
+> test
+> node --test database.test.mjs
+
+✔ schema, order snapshots, idempotency, input constraints and RLS (568.871542ms)
+✔ capacity shifts third reservation, rejects reduction, and releases cancelled capacity (378.337375ms)
+✔ LOCK, actual concurrency, overruns and completion transitions (377.279833ms)
+✔ duplicate completion preserves the original timestamp, version and reservation release (357.489917ms)
+✔ cross-restaurant pickup is rejected and inactive locations cannot accept new orders (378.74525ms)
+✔ a failed booking leaves no accepted state and exact adjacent intervals share capacity (384.603292ms)
+✔ interval capacity checks the peak rather than total number of intersecting orders (341.189334ms)
+✔ backend role can reduce unused capacity but cannot reduce booked capacity (359.856709ms)
+✔ a late cooking start atomically moves conflicting future reservations (343.211208ms)
+✔ pickup space blocks overlapping windows, early and late entry, and releases atomically (347.128542ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3893.040625

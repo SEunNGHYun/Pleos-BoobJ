@@ -1,0 +1,87 @@
+Calculating task graph as no cached configuration is available for tasks: :automotive:assembleDebug :automotive:testDebugUnitTest
+> Task :automotive:generateDebugAssets UP-TO-DATE
+> Task :automotive:preBuild UP-TO-DATE
+> Task :shared:preBuild UP-TO-DATE
+> Task :shared:generateDebugAssets UP-TO-DATE
+> Task :automotive:preDebugUnitTestBuild UP-TO-DATE
+> Task :automotive:preDebugBuild UP-TO-DATE
+> Task :shared:preDebugBuild UP-TO-DATE
+> Task :automotive:javaPreCompileDebug UP-TO-DATE
+> Task :automotive:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :shared:javaPreCompileDebug UP-TO-DATE
+> Task :automotive:generateDebugResources UP-TO-DATE
+> Task :shared:mergeDebugAssets UP-TO-DATE
+> Task :shared:processDebugNavigationResources UP-TO-DATE
+> Task :automotive:generateDebugGlobalSynthetics UP-TO-DATE
+> Task :shared:writeDebugAarMetadata UP-TO-DATE
+> Task :automotive:checkDebugDuplicateClasses UP-TO-DATE
+> Task :automotive:mapDebugSourceSetPaths UP-TO-DATE
+> Task :automotive:desugarDebugFileDependencies UP-TO-DATE
+> Task :shared:generateDebugResources UP-TO-DATE
+> Task :automotive:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :automotive:mergeDebugAssets UP-TO-DATE
+> Task :automotive:processDebugNavigationResources UP-TO-DATE
+> Task :automotive:extractDeepLinksDebug UP-TO-DATE
+> Task :shared:extractDeepLinksDebug UP-TO-DATE
+> Task :automotive:packageDebugResources UP-TO-DATE
+> Task :shared:mapDebugSourceSetPaths UP-TO-DATE
+> Task :shared:processDebugManifest UP-TO-DATE
+> Task :shared:packageDebugResources UP-TO-DATE
+> Task :automotive:mergeDebugJniLibFolders UP-TO-DATE
+> Task :automotive:compressDebugAssets UP-TO-DATE
+> Task :automotive:compileDebugNavigationResources UP-TO-DATE
+> Task :shared:parseDebugLocalResources UP-TO-DATE
+> Task :shared:compileDebugLibraryResources UP-TO-DATE
+> Task :automotive:checkDebugAarMetadata UP-TO-DATE
+> Task :shared:mergeDebugJniLibFolders UP-TO-DATE
+> Task :automotive:validateSigningDebug UP-TO-DATE
+> Task :automotive:parseDebugLocalResources UP-TO-DATE
+> Task :automotive:mergeExtDexDebug UP-TO-DATE
+> Task :automotive:writeDebugAppMetadata UP-TO-DATE
+> Task :automotive:writeDebugSigningConfigVersions UP-TO-DATE
+> Task :automotive:javaPreCompileDebugUnitTest UP-TO-DATE
+> Task :shared:generateDebugRFile UP-TO-DATE
+> Task :shared:mergeDebugNativeLibs NO-SOURCE
+> Task :automotive:mergeDebugResources UP-TO-DATE
+> Task :automotive:generateDebugRFile UP-TO-DATE
+> Task :shared:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :automotive:mergeDebugNativeLibs NO-SOURCE
+> Task :automotive:stripDebugDebugSymbols NO-SOURCE
+> Task :automotive:processDebugMainManifest UP-TO-DATE
+> Task :automotive:processDebugManifest UP-TO-DATE
+> Task :automotive:processDebugManifestForPackage UP-TO-DATE
+> Task :automotive:processDebugResources UP-TO-DATE
+> Task :shared:compileDebugKotlin
+> Task :shared:compileDebugJavaWithJavac NO-SOURCE
+> Task :shared:processDebugJavaRes UP-TO-DATE
+> Task :shared:bundleLibRuntimeToJarDebug
+> Task :shared:bundleLibRuntimeToDirDebug
+> Task :shared:bundleLibCompileToJarDebug
+> Task :automotive:compileDebugKotlin NO-SOURCE
+> Task :automotive:processDebugJavaRes NO-SOURCE
+> Task :automotive:compileDebugJavaWithJavac NO-SOURCE
+> Task :automotive:bundleDebugClassesToCompileJar UP-TO-DATE
+> Task :automotive:bundleDebugClassesToRuntimeJar UP-TO-DATE
+> Task :automotive:dexBuilderDebug UP-TO-DATE
+> Task :automotive:mergeDebugJavaResource UP-TO-DATE
+> Task :automotive:mergeProjectDexDebug UP-TO-DATE
+> Task :automotive:mergeLibDexDebug
+> Task :automotive:compileDebugUnitTestKotlin UP-TO-DATE
+> Task :automotive:processDebugUnitTestJavaRes UP-TO-DATE
+> Task :automotive:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :automotive:packageDebug
+> Task :automotive:assembleDebug
+> Task :automotive:createDebugApkListingFileRedirect UP-TO-DATE
+> Task :automotive:testDebugUnitTest
+
+[Incubating] Problems report is available at: file:///Users/yunseunghyeon/Desktop/hyundai/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.5.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 3s
+57 actionable tasks: 7 executed, 50 up-to-date
+Configuration cache entry stored.

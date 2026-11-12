@@ -18,6 +18,9 @@ dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
+        maven("https://nexus-playground.pleos.ai/repository/maven-releases/") {
+            content { includeGroup("ai.pleos.playground") }
+        }
         mavenCentral()
     }
 }

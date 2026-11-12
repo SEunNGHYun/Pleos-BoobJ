@@ -52,9 +52,10 @@ test('schema, order snapshots, idempotency, input constraints and RLS', async ()
     await reject(db,'delete from restaurant_pickup_locations where id=$1',[id(3)],/foreign key constraint/);
     await reject(db,`select public.create_pickup_order($1,$2,$3,'12가3456','+821012345678',$4,'[]')`,[id(1),id(2),id(3),crypto.randomUUID()],/items/);
     const r=await db.query(`select relname,relrowsecurity from pg_class where relnamespace='public'::regnamespace and relkind='r'`);
-    assert.equal(r.rows.length,10); assert.ok(r.rows.every(x=>x.relrowsecurity));
+    assert.equal(r.rows.length,13); assert.ok(r.rows.every(x=>x.relrowsecurity));
     await db.exec('set role authenticated');
     await reject(db,'select * from orders',[],/permission denied/);
+    await reject(db,'select * from pickup_space_reservations',[],/permission denied/);
     await reject(db,'select public.start_cooking($1)',[o],/permission denied/);
     await db.exec('reset role; set role service_role');
     await reject(db,"update orders set order_status='ACCEPTED' where id=$1",[o],/permission denied/);
@@ -95,6 +96,24 @@ test('LOCK, actual concurrency, overruns and completion transitions',async()=>{
   await db.query('select start_cooking($1)',[b]);
   await db.query("select close_pickup_order($1,'COMPLETED')",[a]);
   assert.equal((await db.query('select order_status from orders where id=$1',[a])).rows[0].order_status,'COMPLETED');
+ } finally {await db.close();}
+});
+
+test('duplicate completion preserves the original timestamp, version and reservation release',async()=>{
+ const db=await database(); try {
+  await fixture(db); const id=await order(db);
+  await reserve(db,id);
+  await db.query('select start_cooking($1)',[id]);
+  await db.query('select mark_order_ready($1)',[id]);
+  const snapshot=async()=> (await db.query(`select o.order_status,o.completed_at,o.version,c.released_at
+    from orders o join cooking_reservations c on c.order_id=o.id where o.id=$1`,[id])).rows[0];
+  await db.query("select close_pickup_order($1,'COMPLETED')",[id]);
+  const first=await snapshot();
+  assert.equal(first.order_status,'COMPLETED');
+  assert.ok(first.completed_at);
+  assert.ok(first.released_at);
+  await db.query("select close_pickup_order($1,'COMPLETED')",[id]);
+  assert.deepEqual(await snapshot(),first);
  } finally {await db.close();}
 });
 
@@ -166,4 +185,37 @@ test('a late cooking start atomically moves conflicting future reservations',asy
    cross join orders o where r.order_id=$1 and o.id=$2`,[b,a])).rows[0];
   assert.ok(+row.planned_start_at>=+row.estimated_ready_at,'confirmed next reservation must follow actual completion estimate');
  } finally {await db.close();}
+});
+
+test('pickup space blocks overlapping windows, early and late entry, and releases atomically',async()=>{
+ const db=await database();try{
+  await fixture(db);
+  const first=await order(db), second=await order(db);
+  await reserve(db,first);await reserve(db,second);
+  const insert=(orderId,start,end)=>db.query(`insert into pickup_space_reservations
+   (order_id,location_id,space_number,start_at,end_at)
+   values ($1,$2,1,now()+make_interval(mins=>$3),now()+make_interval(mins=>$4))`,[orderId,id(3),start,end]);
+  await insert(first,10,13);
+  await assert.rejects(insert(second,11,14),/pickup space conflict/);
+  await reject(db,'select occupy_pickup_space($1)',[first],/early/);
+  await db.query("select close_pickup_order($1,'CANCELLED')",[first]);
+  await insert(second,-4,-1);
+  await reject(db,'select occupy_pickup_space($1)',[second],/late/);
+  await db.query("select close_pickup_order($1,'CANCELLED')",[second]);
+  const third=await order(db), fourth=await order(db);
+  await reserve(db,third);await reserve(db,fourth);
+  await insert(third,-1,2);
+  await db.query('select occupy_pickup_space($1)',[third]);
+  await db.query('select occupy_pickup_space($1)',[third]);
+  await assert.rejects(insert(fourth,30,33),/pickup space conflict/);
+  await reject(db,"select close_pickup_order($1,'CANCELLED')",[third],/occupied/);
+  await db.query('select start_cooking($1)',[third]);
+  await reject(db,"select reserve_cooking($1,10,now()+interval '1 hour',0)",[third],/LOCK/);
+  await db.query('select mark_order_ready($1)',[third]);
+  const close="select (close_pickup_order($1,'COMPLETED')).version";
+  const completed=await db.query(close,[third]);
+  assert.deepEqual((await db.query(close,[third])).rows,completed.rows);
+  assert.equal((await db.query('select status from pickup_space_reservations where order_id=$1',[third])).rows[0].status,'RELEASED');
+  await insert(fourth,30,33);
+ }finally{await db.close();}
 });

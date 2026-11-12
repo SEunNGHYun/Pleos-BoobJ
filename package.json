@@ -23,7 +23,8 @@
     "test:api": "npm run test --workspace @babmatj/server",
     "test:db": "npm run test --workspace babmatj-database-tests",
     "test:smoke": "node scripts/smoke.mjs",
-    "local:setup": "npm run build --workspace @babmatj/contracts && npm run build --workspace @babmatj/server && npm run local:setup --workspace @babmatj/server"
+    "local:setup": "npm run build --workspace @babmatj/contracts && npm run build --workspace @babmatj/server && npm run local:setup --workspace @babmatj/server",
+    "local:seed": "npm run build --workspace @babmatj/contracts && npm run build --workspace @babmatj/server && npm run local:seed --workspace @babmatj/server"
   },
   "devDependencies": {
     "concurrently": "10.0.6",

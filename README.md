@@ -58,7 +58,7 @@ Android는 기존과 동일하게 Android Studio 또는 `./gradlew :mobile:assem
 
 ## 현재 구현 범위
 
-식당 웹 시작 화면, 중앙 서버 연결 상태/재시도, 식당·메뉴·픽업 위치 등록 API, 사용자 주문 생성·조회·픽업 장소 API, 식당 주문 목록·수락·거절 API, 공통 상태 계약을 제공합니다. 로컬 DB 설정은 `npm run local:setup` 후 `npm run dev`로 실행합니다. 주문 입력 웹 화면과 Supabase 호스팅/Auth 연결은 후속 작업입니다. 임의의 주문·매출·식당 fixture를 실제 데이터로 표시하지 않습니다.
+식당 웹 시작 화면, 중앙 서버 연결 상태/재시도, 식당·메뉴·픽업 위치 등록 API, 사용자 주문 생성·조회·픽업 장소 API, 식당 주문 목록·수락·거절 API, 공통 상태 계약을 제공합니다. 로컬 DB 설정은 `npm run local:setup` 후 `npm run dev`로 실행합니다. [차량 주문·식당 접수 시연](docs/api/two-screen-demo.md)은 로컬 DB와 MOCK ETA를 사용합니다. Supabase 호스팅/Auth 연결은 후속 작업입니다. 임의의 주문·매출·식당 fixture를 실제 데이터로 표시하지 않습니다.
 
 [API 입력·응답과 로컬 계정 사용 방법](docs/api/pickup.md) 및 [식당 주문 접수 API](docs/api/restaurant-receipt.md)를 참고하세요. 개발 계정 토큰은 `.local/credentials.json`에 저장되며 로컬 모드는 운영 환경에서 사용하지 않습니다.
 

@@ -1,6 +1,6 @@
 # 식당 접수 API
 
-범위: 기존 로컬 NestJS API와 DB 조리 예약 함수를 연결한다. 실제 SDK ETA와 물리적 픽업 공간 예약은 이번 구현에 포함하지 않는다. 식당 웹 버튼/화면도 아직 없다.
+범위: 기존 로컬 NestJS API와 DB 조리 예약 함수를 연결한다. ETA는 MOCK 입력이며 픽업 공간 예약은 식당이 관리한다고 가정한 위치의 소프트웨어 배정이다. [식당 웹과 차량 앱 시연](two-screen-demo.md)에서 기존 API를 사용한다.
 
 ## 실행·인증
 루트 `npm run local:setup` 후 `npm run dev:server`. 이미 서버가 DB를 사용하는 중이면 setup 전에 서버를 종료한다. 기존 DB 데이터/이력은 유지하고 새 마이그레이션은 서버 시작 시 적용한다.
@@ -49,11 +49,16 @@
   "acceptedCookDurationMinutes":20,
   "eta":{"source":"MOCK","arrivalAt":"<요청 시각>","observedAt":"<관측 시각>"},
   "cookingReservation":{"id":"<예약 UUID>","plannedStartAt":"<배정 시각>","plannedEndAt":"<배정 완료 시각>"},
-  "pickupSpaceReservationStatus":"NOT_IMPLEMENTED"
+  "pickupSpaceReservationStatus":"RESERVED",
+  "pickupSpaceReservation":{"spaceNumber":1,"startAt":"<확정 시작>","endAt":"<확정 종료>"}
 }
 ```
 
-예시의 UUID/시각 자리는 실제 응답값이다. plannedEndAt이 ETA보다 늦을 수 있다. **조리 예약 완료를 픽업 시간 확정이나 물리적 공간 확보로 표시하지 않는다.** 물리적 픽업 공간까지 원자적으로 확정하는 전체 계약은 아직 구현 전이다.
+픽업 위치별 `spaceCapacity`와 `handoffMinutes` 기본값은 1과 3이다. 수락은 주방 일정, 공간 구간, 접수 이력을 같은 트랜잭션에 저장한다. 구간은 시작 포함·종료 제외다.
+
+요청 시각을 사용할 수 없으면 409와 `code`, `availableAtEta: false`, `alternativePickupAt`을 반환한다. `PICKUP_CONFLICT`는 공간 충돌, `SPACE_OCCUPIED`는 실제 점유가 이어져 대안을 정할 수 없는 경우, `COOKING_CAPACITY`는 해당 시각까지 조리 일정이 맞지 않는 경우다. 대안은 다시 확인할 후보이며 주문은 PENDING 상태로 유지된다.
+
+입장은 내부 DB 함수로 예약 시간 안에만 허용한다. OCCUPIED는 시간이 지나도 인도 완료 전까지 차단하며, 예약 취소나 인도 완료 시 RELEASED를 저장한다. 기존 예약 없는 접수 건은 UNRESERVED로 조회되고 과거 요청 키의 재전송은 당시 응답을 반환한다.
 
 ## 3. 주문 거절
 `POST /api/orders/{orderId}/reject`
@@ -73,4 +78,4 @@ PENDING만 허용한다. reason은 공백 제외 1~500자. 200 REJECTED 및 증�
 - 새 테이블 restaurant_order_actions는 접수 작업 중복 방지/사유 보존용이다. 기존 마이그레이션과 주문 상태 enum은 변경하지 않았다.
 
 ## 남은 범위
-실제 Supabase/Auth, 차량 ETA 수신·갱신, 조리 시작/완료 HTTP API, 물리적 공간 예약, 사용자 동의가 필요한 대체 픽업 시간 확정, 식당 웹 접수 UI는 별도 작업이다. 독립 PostgreSQL 세션 경쟁 검증도 로컬 단일 엔진 테스트와 별도로 필요하다.
+실제 Supabase/Auth, 차량 ETA 수신·갱신, ETA 변경에 따른 재계획은 별도 작업이다. [수동 조리·입장·인도 흐름](two-screen-demo.md#수동-인도-시연)은 기존 DB 함수를 호출하는 식당 전용 HTTP 작업으로 제공한다. 독립 PostgreSQL 세션 경쟁 검증도 로컬 단일 엔진 테스트와 별도로 필요하다.

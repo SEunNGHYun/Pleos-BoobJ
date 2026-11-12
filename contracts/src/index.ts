@@ -20,7 +20,7 @@ export function isHealthResponse(value: unknown): value is HealthResponse {
 export interface PickupLocation {
  id: string; name: string; address: string; latitude: number; longitude: number; instructions: string | null;
 }
-export interface MenuSelection { id: string; name: string; priceKrw: number; }
+export interface MenuSelection { id: string; name: string; priceKrw: number; baseCookMinutes: number | null; imageData?: string | null; }
 export interface CreateOrderRequest {
  restaurantId: string; pickupLocationId: string; vehiclePlate: string; contactPhone: string; requestKey: string;
  items: Array<{menuId: string; quantity: number}>;
@@ -35,8 +35,12 @@ export interface OrderResponse {
  rejectionReason: string | null;
  acceptedCookDurationMinutes: number | null;
  eta: {source: 'MOCK'; arrivalAt: string; observedAt: string} | null;
+ etaProposal: {pickupAt:string; cookingStartAt:string} | null;
+ etaNeedsReview: boolean;
+ pickupExpired: boolean;
  cookingReservation: {id: string; plannedStartAt: string; plannedEndAt: string} | null;
- pickupSpaceReservationStatus: 'NOT_IMPLEMENTED';
+ pickupSpaceReservationStatus: 'NOT_IMPLEMENTED' | 'UNRESERVED' | 'RESERVED' | 'OCCUPIED' | 'RELEASED';
+ pickupSpaceReservation?: {spaceNumber:number;startAt:string;endAt:string} | null;
 }
 
 export interface AcceptOrderRequest {
@@ -48,3 +52,7 @@ export interface AcceptOrderRequest {
 }
 export interface RejectOrderRequest {expectedVersion: number; requestKey: string; reason: string;}
 export interface RestaurantOrdersResponse {items: OrderResponse[]; total: number; limit: number; offset: number;}
+
+export const PICKUP_LIFECYCLE_ACTIONS = ['start', 'ready', 'arrive', 'complete', 'cancel'] as const;
+export type PickupLifecycleAction = typeof PICKUP_LIFECYCLE_ACTIONS[number];
+export interface PickupLifecycleRequest { expectedVersion: number; requestKey: string; }
