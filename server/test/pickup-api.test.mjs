@@ -25,7 +25,7 @@ const restaurant=()=>({name:'밥맞식당',contactPhone:'+82212345678',address:'
  isAcceptingOrders:true,pickupLocations:[
   {name:'정문',address:'정문 주차장',latitude:37.5,longitude:127,isDefault:true},
   {name:'후문',address:'후문 픽업존',latitude:37.51,longitude:127.01,instructions:'주차구역에서 수령'}],
- menus:[{name:'제육',priceKrw:10000},{name:'비빔밥',priceKrw:9000}]});
+ menus:[{name:'제육',priceKrw:10000,baseCookMinutes:15},{name:'비빔밥',priceKrw:9000}]});
 const order=(r)=>({restaurantId:r.id,pickupLocationId:r.pickupLocations[1].id,vehiclePlate:'12가3456',
  contactPhone:'+821012345678',requestKey:crypto.randomUUID(),items:[{menuId:r.menus[0].id,quantity:2}]});
 
@@ -36,6 +36,8 @@ test('register restaurant and create an order with selected pickup snapshot and 
   const r=created.body;assert.equal(r.pickupLocations.length,2);assert.equal(r.menus.length,2);
   assert.equal((await f.request('GET',`/restaurants/${r.id}/pickup-locations`,f.customer)).status,200);
   const availableMenus=(await f.request('GET',`/restaurants/${r.id}/menus`,f.customer)).body;
+  assert.equal(availableMenus.find(m=>m.name==='제육').baseCookMinutes,15);
+  assert.equal(availableMenus.find(m=>m.name==='비빔밥').baseCookMinutes,null);
   assert.equal(availableMenus.find(m=>m.id===r.menus[0].id).priceKrw,10000);
   const input=order(r);const placed=await f.request('POST','/orders',f.customer,input);
   assert.equal(placed.status,201);assert.equal(placed.body.orderStatus,'PENDING');
@@ -51,6 +53,39 @@ test('register restaurant and create an order with selected pickup snapshot and 
   const replay=await f.request('POST','/orders',f.customer,input);assert.equal(replay.body.id,placed.body.id);
   assert.equal(replay.body.items[0].menuName,'제육');assert.equal(replay.body.items[0].unitPriceKrw,10000);
   assert.equal((await f.request('POST','/orders',f.customer,{...input,vehiclePlate:'34나5678'})).status,409);
+ }finally{await f.close();}
+});
+
+test('restaurant discovery filters food categories and preserves the pickup choice without route estimates',async()=>{
+ const f=await fixture();try{
+  const created=await f.request('POST','/restaurants',f.owner,{...restaurant(),foodCategory:'한식'});
+  assert.equal(created.status,201);
+  await f.request('POST','/restaurants',f.owner,{...restaurant(),foodCategory:'중식'});
+  const options=await f.request('POST','/pickup/restaurant-options',f.customer,{foodCategory:'한식'});
+  assert.equal(options.status,200);
+  assert.deepEqual(options.body.map(option=>[option.restaurantId,option.pickupLocationId,option.distanceMeters]),
+   [[created.body.id,created.body.pickupLocations[0].id,null]]);
+ }finally{await f.close();}
+});
+
+test('only restaurant staff can replace or remove a menu image',async()=>{
+ const f=await fixture();try{
+  const imageData='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jX2cAAAAASUVORK5CYII=';
+  const data=restaurant();
+  data.imageData=imageData;
+  data.menus[0].imageData=imageData;
+  const created=await f.request('POST','/restaurants',f.owner,data);
+  assert.equal(created.status,201);
+  const r=created.body;
+  const base=`/restaurants/${r.id}/menus`;
+  const path=`${base}/${r.menus[0].id}/image`;
+  assert.equal((await f.request('GET',base,f.customer)).body.find(menu=>menu.id===r.menus[0].id).imageData,imageData);
+  assert.equal((await f.request('POST',path,f.outsider,{imageData:null})).status,404);
+  assert.equal((await f.request('POST',path,f.owner,{imageData:null})).status,200);
+  assert.equal((await f.request('GET',base,f.customer)).body.find(menu=>menu.id===r.menus[0].id).imageData,null);
+  assert.equal((await f.request('POST',path,f.owner,{imageData})).status,200);
+  const options=await f.request('POST','/pickup/restaurant-options',f.customer,{foodCategory:'기타'});
+  assert.equal(options.body.find(option=>option.restaurantId===r.id).imageData,imageData);
  }finally{await f.close();}
 });
 
@@ -148,6 +183,11 @@ test('minimal order creation requirements: HTTP results and persisted database s
   await t.test('nonexistent but well-formed menu UUID is rejected without saving any order or item',async()=>{
    const payload=order(r);payload.items[0].menuId=crypto.randomUUID();await invalid(payload);
   });
+  await t.test('nonexistent restaurant returns 404 without saving an order',async()=>{
+   const before=await counts();
+   const result=await f.request('POST','/orders',f.customer,{...order(r),restaurantId:crypto.randomUUID()});
+   assert.equal(result.status,404);assert.deepEqual(await counts(),before);
+  });
   await t.test('quantity zero and negative quantity are rejected without database changes',async()=>{
    for(const quantity of [0,-1]){const payload=order(r);payload.items[0].quantity=quantity;await invalid(payload);}
   });
@@ -173,6 +213,8 @@ test('restaurant receipt: own list, acceptance and rejection with atomic cooking
   const r=(await f.request('POST','/restaurants',f.owner,restaurant())).body;
   const a=(await f.request('POST','/orders',f.customer,order(r))).body;
   const b=(await f.request('POST','/orders',f.customer,order(r))).body;
+  const detail=await f.request('GET',`/orders/${a.id}`,f.customer);
+  assert.equal(detail.status,200);assert.deepEqual(detail.body,a);
   const list=await f.request('GET',`/restaurants/${r.id}/orders?status=PENDING&limit=1&offset=0`,f.owner);
   assert.equal(list.status,200);assert.equal(list.body.items.length,1);assert.equal(list.body.total,2);
   assert.ok(list.body.items[0].contactPhone);assert.ok(list.body.items[0].pickupLocation.id);
@@ -184,7 +226,7 @@ test('restaurant receipt: own list, acceptance and rejection with atomic cooking
   assert.equal(accepted.status,200);assert.equal(accepted.body.orderStatus,'ACCEPTED');
   assert.equal(accepted.body.cookingStatus,'SCHEDULED');assert.equal(accepted.body.version,1);
   assert.equal(accepted.body.acceptedCookDurationMinutes,20);assert.equal(accepted.body.eta.source,'MOCK');
-  assert.ok(accepted.body.cookingReservation.plannedStartAt);assert.equal(accepted.body.pickupSpaceReservationStatus,'NOT_IMPLEMENTED');
+  assert.ok(accepted.body.cookingReservation.plannedStartAt);assert.equal(accepted.body.pickupSpaceReservationStatus,'RESERVED');
   const replay=await f.request('POST',`/orders/${a.id}/accept`,f.owner,input);
   assert.equal(replay.status,200);assert.deepEqual(replay.body,accepted.body);
   assert.equal((await f.request('POST',`/orders/${a.id}/accept`,f.owner,{...input,acceptedCookDurationMinutes:25})).status,409);
@@ -197,6 +239,17 @@ test('restaurant receipt: own list, acceptance and rejection with atomic cooking
   assert.equal((await f.request('GET',`/restaurants/${r.id}/orders?status=REJECTED`,f.owner)).body.items[0].rejectionReason,'재료 소진');
   assert.equal((await f.request('POST',`/orders/${b.id}/reject`,f.owner,reject)).status,200);
   assert.equal((await f.request('GET',`/restaurants/${r.id}/orders?status=PENDING`,f.owner)).body.total,0);
+  for(const [id,status] of [[a.id,'ACCEPTED'],[b.id,'REJECTED']]){
+   for(const [action,payload] of [['accept',input],['reject',reject]]){
+    const duplicate=await f.request('POST',`/orders/${id}/${action}`,f.owner,{
+     ...payload,expectedVersion:1,requestKey:crypto.randomUUID(),
+    });
+    assert.equal(duplicate.status,409);
+   }
+   const detail=await f.request('GET',`/orders/${id}`,f.customer);
+   assert.equal(detail.status,200);
+   assert.equal(detail.body.orderStatus,status);assert.equal(detail.body.version,1);
+  }
   const rows=await f.db.withServerRole(tx=>tx.query('select count(*)::int as n from cooking_reservations'));
   assert.equal(rows.rows[0].n,1);
  }finally{await f.close();}
@@ -246,4 +299,91 @@ test('restaurant receipt idempotency survives DB reopen',async()=>{
   assert.equal(replay.status,200);assert.deepEqual(await replay.json(),accepted.body);
   assert.equal((await db.withServerRole(tx=>tx.query('select count(*)::int as n from cooking_reservations'))).rows[0].n,1);
  }finally{if(f)await f.close();if(app)await app.close();else if(db)await db.close();await rm(path,{recursive:true,force:true});}
+});
+
+test('two vehicles competing for one pickup window commit only one reservation',async()=>{
+ const f=await fixture();try{
+  const r=(await f.request('POST','/restaurants',f.owner,restaurant())).body;
+  const a=(await f.request('POST','/orders',f.customer,order(r))).body;
+  const b=(await f.request('POST','/orders',f.outsider,{...order(r),vehiclePlate:'34나5678'})).body;
+  const eta=new Date(Date.now()+3600000).toISOString();
+  const accept=(id,arrivalAt)=>f.request('POST',`/orders/${id}/accept`,f.owner,{
+   acceptedCookDurationMinutes:20,expectedVersion:0,requestKey:crypto.randomUUID(),
+   eta:{source:'MOCK',arrivalAt,observedAt:new Date().toISOString()},
+  });
+  const responses=await Promise.all([a,b].map(o=>accept(o.id,eta)));
+  assert.deepEqual(responses.map(r=>r.status).sort(),[200,409]);
+  const winner=responses.find(r=>r.status===200).body;
+  const conflict=responses.find(r=>r.status===409).body;
+  assert.equal(winner.pickupSpaceReservationStatus,'RESERVED');
+  assert.equal(conflict.code,'PICKUP_CONFLICT');
+  assert.equal(Date.parse(conflict.alternativePickupAt),Date.parse(eta)+180000);
+  const loser=winner.id===a.id?b:a;
+  const pending=await f.request('GET',`/orders/${loser.id}`,f.owner);
+  assert.equal(pending.body.orderStatus,'PENDING');
+  assert.equal(pending.body.version,0);
+  assert.equal(pending.body.cookingReservation,null);
+  assert.equal((await accept(loser.id,conflict.alternativePickupAt)).status,200);
+ }finally{await f.close();}
+});
+
+test('configured pickup capacity and handoff duration control the available windows',async()=>{
+ const f=await fixture();try{
+  const settings=restaurant();
+  settings.maxConcurrentOrders=3;
+  Object.assign(settings.pickupLocations[1],{spaceCapacity:2,handoffMinutes:4});
+  const r=(await f.request('POST','/restaurants',f.owner,settings)).body;
+  const eta=new Date(Date.now()+3600000).toISOString();
+  const results=[];
+  for(let i=0;i<3;i++){
+   const created=(await f.request('POST','/orders',f.customer,order(r))).body;
+   results.push(await f.request('POST',`/orders/${created.id}/accept`,f.owner,{
+    acceptedCookDurationMinutes:20,expectedVersion:0,requestKey:crypto.randomUUID(),
+    eta:{source:'MOCK',arrivalAt:eta,observedAt:new Date().toISOString()},
+   }));
+  }
+  assert.deepEqual(results.map(result=>result.status),[200,200,409]);
+  assert.deepEqual(results.slice(0,2).map(result=>result.body.pickupSpaceReservation.spaceNumber),[1,2]);
+  assert.equal(Date.parse(results[2].body.alternativePickupAt),Date.parse(eta)+240000);
+ }finally{await f.close();}
+});
+
+test('manual pickup lifecycle with MOCK ETA, cancellation and completion replay',
+ {skip:process.env.RUN_PICKUP_DEMO!=='1',timeout:100_000},async()=>{
+ const f=await fixture();try{
+  const r=(await f.request('POST','/restaurants',f.owner,restaurant())).body;
+  const create=async()=> (await f.request('POST','/orders',f.customer,order(r))).body;
+  const cancelled=await create();
+  const event=(id,action,version,key=crypto.randomUUID(),actor=f.owner)=>
+   f.request('POST',`/orders/${id}/${action}`,actor,{expectedVersion:version,requestKey:key});
+  assert.equal((await event(cancelled.id,'cancel',0)).body.orderStatus,'CANCELLED');
+  const created=await create();
+  const now=Date.now(), arrivalAt=now+63_000;
+  const accept=await f.request('POST',`/orders/${created.id}/accept`,f.owner,{
+   acceptedCookDurationMinutes:1,expectedVersion:0,requestKey:crypto.randomUUID(),
+   eta:{source:'MOCK',arrivalAt:new Date(arrivalAt).toISOString(),observedAt:new Date(now).toISOString()},
+  });
+  assert.equal(accept.status,200);assert.equal(accept.body.pickupSpaceReservationStatus,'RESERVED');
+  console.log('DEMO',created.id,'PENDING → ACCEPTED / RESERVED / MOCK',accept.body.cookingReservation.plannedStartAt);
+  assert.equal((await event(created.id,'arrive',1)).status,409);
+  assert.equal((await event(created.id,'start',1,crypto.randomUUID(),f.customer)).status,404);
+  assert.equal((await event(created.id,'start',1)).body.cookingStatus,'COOKING');
+  assert.equal((await event(created.id,'cancel',2)).status,409);
+  assert.equal((await event(created.id,'complete',2)).status,409);
+  assert.equal((await event(created.id,'ready',2)).body.cookingStatus,'READY');
+  await new Promise(resolve=>setTimeout(resolve,Math.max(0,arrivalAt-Date.now()+200)));
+  assert.equal((await event(created.id,'arrive',3)).body.pickupSpaceReservationStatus,'OCCUPIED');
+  const key=crypto.randomUUID();
+  const complete=await event(created.id,'complete',4,key);
+  assert.equal(complete.status,200);assert.equal(complete.body.orderStatus,'COMPLETED');
+  assert.equal(complete.body.pickupSpaceReservationStatus,'RELEASED');
+  assert.deepEqual(await event(created.id,'complete',4,key),complete);
+  const fresh=await event(created.id,'complete',5);
+  assert.equal(fresh.status,200);assert.equal(fresh.body.version,5);
+  const vehicle=await f.request('GET',`/orders/${created.id}`,f.customer);
+  const restaurantList=await f.request('GET',`/restaurants/${r.id}/orders`,f.owner);
+  assert.equal(vehicle.body.orderStatus,'COMPLETED');
+  assert.deepEqual(restaurantList.body.items.find(o=>o.id===created.id),vehicle.body);
+  console.log('DEMO',created.id,'MANUAL COOKING → READY → OCCUPIED → COMPLETED / RELEASED; replay version',fresh.body.version);
+ }finally{await f.close();}
 });

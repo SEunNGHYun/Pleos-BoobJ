@@ -1,0 +1,107 @@
+[
+  {
+    "name": "[시연] 정담식당",
+    "address": "서울역 인근 · 가상 식당",
+    "contactPhone": "+82200000000",
+    "foodCategory": "한식",
+    "isAcceptingOrders": true,
+    "maxConcurrentOrders": 2,
+    "pickupLocations": [
+      {
+        "name": "시연 픽업 구역",
+        "address": "서울역 인근 · 테스트 좌표",
+        "latitude": 37.5563,
+        "longitude": 126.9723,
+        "isDefault": true,
+        "spaceCapacity": 1,
+        "handoffMinutes": 3,
+        "instructions": "에뮬레이터 시연용 위치입니다."
+      }
+    ],
+    "menus": [
+      {
+        "name": "비빔밥",
+        "priceKrw": 9000,
+        "baseCookMinutes": 10,
+        "imageData": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAIAAABt+uBvAAACHklEQVR4nO3csW3DMBAFUK+VAdJniBQZLANkkCzgDdykD9LQBgSosU0ej//fnZAP/FYH3gNFCpbF09/PWenklD6C4hGQgAQkIAEVjoAEJCABCahwBFQVqLXf2fwLIIdLrlQQEMQlRYoORKIJYyICBdAEMLGAgnV4RnigFBoeExgoXQduhASabePz/WXP98frs1y+3m7JMoIB+VzsQHuCjTBAKzSzQFNMJYAsA926AgLZmZKB7DoMoNuFbKMlIDsND2gLz8gPNKtDBeIZsYBICv2ChYAcOgFADCMPkE8nBghuBAZiLzTGgplAw4W5ONCsERIoYKuyF8wBGurUAeo/ZycAZSn4HrKjgRKnSb9gKJBxaz8EkN0IAJS70AwLCqgGkPH+OhCQ0WgVKH0vtxTMBKqj0CkoIAEJSEACEpCAPEB1FDoFBSQgAQlIQAISkAeo6fegodFBgYxdC4gP1PRWY2oSHQLI3rLerAooEqhvlLgS3weiAwbajCoA9QfJBRpOouJAs83i/6OYDgScPk4gt1EAEFbHD+QzYgPBdYhAD42oQMPxRANZjNh7+X45SWcVyGLUyM+QlgGsNBj0vRgJiK2DATIatUdvGUl7OUoHBmQ3esaE2qqwOkigKaN7qSHQbHFUU/puPhaoghG2HZ3dkQQUb0TqQucHZQNRmQJGrjPMigGtSKWMU+coCkhAAhJQ4QhIQAISkIAKR0ACWssVE0LPfAqWUz0AAAAASUVORK5CYII="
+      },
+      {
+        "name": "제육덮밥",
+        "priceKrw": 10500,
+        "baseCookMinutes": 15,
+        "imageData": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAIAAABt+uBvAAACHklEQVR4nO3csW3DMBAFUK+VAdJniBQZLANkkCzgDdykD9LQBgSosU0ej//fnZAP/FYH3gNFCpbF09/PWenklD6C4hGQgAQkIAEVjoAEJCABCahwBFQVqLXf2fwLIIdLrlQQEMQlRYoORKIJYyICBdAEMLGAgnV4RnigFBoeExgoXQduhASabeP743XP5evtWT7fX27JMoIB+VzsQHuCjTBAKzSzQFNMJYAsA926AgLZmZKB7DoMoNuFbKMlIDsND2gLz8gPNKtDBeIZsYBICv2ChYAcOgFADCMPkE8nBghuBAZiLzTGgplAw4W5ONCsERIoYKuyF8wBGurUAeo/ZycAZSn4HrKjgRKnSb9gKJBxaz8EkN0IAJS70AwLCqgGkPH+OhCQ0WgVKH0vtxTMBKqj0CkoIAEJSEACEpCAPEB1FDoFBSQgAQlIQAISkAeo6fegodFBgYxdC4gP1PRWY2oSHQLI3rLerAooEqhvlLgS3weiAwbajCoA9QfJBRpOouJAs83i/6OYDgScPk4gt1EAEFbHD+QzYgPBdYhAD42oQMPxRANZjNh7+X45SWcVyGLUyM+QlgGsNBj0vRgJiK2DATIatUdvGUl7OUoHBmQ3esaE2qqwOkigKaN7qSHQbHFUU/puPhaoghG2HZ3dkQQUb0TqQucHZQNRmQJGrjPMigGtSKWMU+coCkhAAhJQ4QhIQAISkIAKR0ACWssVYrTIixF+SmkAAAAASUVORK5CYII="
+      }
+    ],
+    "imageData": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAIAAABt+uBvAAAAw0lEQVR4nO3QMQ2AMABE0ZpCASteWDHFhBoSLGCACQEkXUjg2rzkC7h75Tp3VSq/LwgPECBAgAAFBwgQIECAggMECBAgQMEBAgQIEKDgAAECBAhQcIAAfQy0jUPrAQIECBCg4AABAgQIUHCAAAECBCg4QIAANQz07FiX5F6+AwQIECBAgADl1gnQPA31AAECBAgQIECAAAECBAgQIECAAAECBAgQIECAAAH6F6jvAAECBAhQcIAAAQIEKDhAgAABAhTcDdQUWEUrrjbTAAAAAElFTkSuQmCC"
+  },
+  {
+    "name": "[시연] 한끼상회",
+    "address": "용산역 인근 · 가상 식당",
+    "contactPhone": "+82200000000",
+    "foodCategory": "한식",
+    "isAcceptingOrders": true,
+    "maxConcurrentOrders": 2,
+    "pickupLocations": [
+      {
+        "name": "시연 픽업 구역",
+        "address": "용산역 인근 · 테스트 좌표",
+        "latitude": 37.5298,
+        "longitude": 126.9648,
+        "isDefault": true,
+        "spaceCapacity": 1,
+        "handoffMinutes": 3,
+        "instructions": "에뮬레이터 시연용 위치입니다."
+      }
+    ],
+    "menus": [
+      {
+        "name": "비빔밥",
+        "priceKrw": 9500,
+        "baseCookMinutes": 12,
+        "imageData": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAIAAABt+uBvAAACHklEQVR4nO3csW3DMBAFUK+VAdJniBQZLANkkCzgDdykD9LQBgSosU0ej//fnZAP/FYH3gNFCpbF09/PWenklD6C4hGQgAQkIAEVjoAEJCABCahwBFQVqLXf2fwLIIdLrlQQEMQlRYoORKIJYyICBdAEMLGAgnV4RnigFBoeExgoXQduhASabeP743XP5evtWT7fX27JMoIB+VzsQHuCjTBAKzSzQFNMJYAsA926AgLZmZKB7DoMoNuFbKMlIDsND2gLz8gPNKtDBeIZsYBICv2ChYAcOgFADCMPkE8nBghuBAZiLzTGgplAw4W5ONCsERIoYKuyF8wBGurUAeo/ZycAZSn4HrKjgRKnSb9gKJBxaz8EkN0IAJS70AwLCqgGkPH+OhCQ0WgVKH0vtxTMBKqj0CkoIAEJSEACEpCAPEB1FDoFBSQgAQlIQAISkAeo6fegodFBgYxdC4gP1PRWY2oSHQLI3rLerAooEqhvlLgS3weiAwbajCoA9QfJBRpOouJAs83i/6OYDgScPk4gt1EAEFbHD+QzYgPBdYhAD42oQMPxRANZjNh7+X45SWcVyGLUyM+QlgGsNBj0vRgJiK2DATIatUdvGUl7OUoHBmQ3esaE2qqwOkigKaN7qSHQbHFUU/puPhaoghG2HZ3dkQQUb0TqQucHZQNRmQJGrjPMigGtSKWMU+coCkhAAhJQ4QhIQAISkIAKR0ACWssVYrTIixF+SmkAAAAASUVORK5CYII="
+      },
+      {
+        "name": "된장찌개",
+        "priceKrw": 10000,
+        "baseCookMinutes": 16,
+        "imageData": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAIAAABt+uBvAAACHklEQVR4nO3csW3DMBAFUK+VAdJniBQZLANkkCzgDdykD9LQBgSosU0ej//fnZAP/FYH3gNFCpbF09/PWenklD6C4hGQgAQkIAEVjoAEJCABCahwBFQVqLXf2fwLIIdLrlQQEMQlRYoORKIJYyICBdAEMLGAgnV4RnigFBoeExgoXQduhASabePy9bbn8/3lWb4/Xm/JMoIB+VzsQHuCjTBAKzSzQFNMJYAsA926AgLZmZKB7DoMoNuFbKMlIDsND2gLz8gPNKtDBeIZsYBICv2ChYAcOgFADCMPkE8nBghuBAZiLzTGgplAw4W5ONCsERIoYKuyF8wBGurUAeo/ZycAZSn4HrKjgRKnSb9gKJBxaz8EkN0IAJS70AwLCqgGkPH+OhCQ0WgVKH0vtxTMBKqj0CkoIAEJSEACEpCAPEB1FDoFBSQgAQlIQAISkAeo6fegodFBgYxdC4gP1PRWY2oSHQLI3rLerAooEqhvlLgS3weiAwbajCoA9QfJBRpOouJAs83i/6OYDgScPk4gt1EAEFbHD+QzYgPBdYhAD42oQMPxRANZjNh7+X45SWcVyGLUyM+QlgGsNBj0vRgJiK2DATIatUdvGUl7OUoHBmQ3esaE2qqwOkigKaN7qSHQbHFUU/puPhaoghG2HZ3dkQQUb0TqQucHZQNRmQJGrjPMigGtSKWMU+coCkhAAhJQ4QhIQAISkIAKR0ACWssVuA/Rdu/mxigAAAAASUVORK5CYII="
+      }
+    ],
+    "imageData": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAIAAABt+uBvAAAAwklEQVR4nO3QQQmAQABE0S21LbaLV0tZwhaCFSzgyQCCF8GdlQc/wMwr57HpodJ9QXiAAAECBCg4QIAAAQIUHCBAgAABCg4QIECAAAUHCBAgQICCAwToY6C11dEDBAgQIEDBAQIECBCg4AABAgQIUHCAAAEaGOjevszJvXwHCBAgQIAAAcrtJ0BTq88BAgQIECBAgAABAgQIECBAgAABAgQIECBAgAABAtQX6N8BAgQIEKDgAAECBAhQcIAAAQIEKLgLwiTMDbwCRNwAAAAASUVORK5CYII="
+  },
+  {
+    "name": "[시연] 오늘의 밥상",
+    "address": "여의도역 인근 · 가상 식당",
+    "contactPhone": "+82200000000",
+    "foodCategory": "한식",
+    "isAcceptingOrders": true,
+    "maxConcurrentOrders": 2,
+    "pickupLocations": [
+      {
+        "name": "시연 픽업 구역",
+        "address": "여의도역 인근 · 테스트 좌표",
+        "latitude": 37.5217,
+        "longitude": 126.9244,
+        "isDefault": true,
+        "spaceCapacity": 1,
+        "handoffMinutes": 3,
+        "instructions": "에뮬레이터 시연용 위치입니다."
+      }
+    ],
+    "menus": [
+      {
+        "name": "비빔밥",
+        "priceKrw": 10000,
+        "baseCookMinutes": 14,
+        "imageData": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAIAAABt+uBvAAACHklEQVR4nO3csW3DMBAFUK+VAdJniBQZLANkkCzgDdykD9LQBgSosU0ej//fnZAP/FYH3gNFCpbF09/PWenklD6C4hGQgAQkIAEVjoAEJCABCahwBFQVqLXf2fwLIIdLrlQQEMQlRYoORKIJYyICBdAEMLGAgnV4RnigFBoeExgoXQduhASabePy9bbn8/3lWb4/Xm/JMoIB+VzsQHuCjTBAKzSzQFNMJYAsA926AgLZmZKB7DoMoNuFbKMlIDsND2gLz8gPNKtDBeIZsYBICv2ChYAcOgFADCMPkE8nBghuBAZiLzTGgplAw4W5ONCsERIoYKuyF8wBGurUAeo/ZycAZSn4HrKjgRKnSb9gKJBxaz8EkN0IAJS70AwLCqgGkPH+OhCQ0WgVKH0vtxTMBKqj0CkoIAEJSEACEpCAPEB1FDoFBSQgAQlIQAISkAeo6fegodFBgYxdC4gP1PRWY2oSHQLI3rLerAooEqhvlLgS3weiAwbajCoA9QfJBRpOouJAs83i/6OYDgScPk4gt1EAEFbHD+QzYgPBdYhAD42oQMPxRANZjNh7+X45SWcVyGLUyM+QlgGsNBj0vRgJiK2DATIatUdvGUl7OUoHBmQ3esaE2qqwOkigKaN7qSHQbHFUU/puPhaoghG2HZ3dkQQUb0TqQucHZQNRmQJGrjPMigGtSKWMU+coCkhAAhJQ4QhIQAISkIAKR0ACWssVuA/Rdu/mxigAAAAASUVORK5CYII="
+      },
+      {
+        "name": "불고기덮밥",
+        "priceKrw": 11500,
+        "baseCookMinutes": 18,
+        "imageData": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAIAAABt+uBvAAACHklEQVR4nO3csW3DMBAFUK+VAdJniBQZLANkkCzgDdykD9LQBgSosU0ej//fnZAP/FYH3gNFCpbF09/PWenklD6C4hGQgAQkIAEVjoAEJCABCahwBFQVqLXf2fwLIIdLrlQQEMQlRYoORKIJYyICBdAEMLGAgnV4RnigFBoeExgoXQduhASabePz/WXP98frs1y+3m7JMoIB+VzsQHuCjTBAKzSzQFNMJYAsA926AgLZmZKB7DoMoNuFbKMlIDsND2gLz8gPNKtDBeIZsYBICv2ChYAcOgFADCMPkE8nBghuBAZiLzTGgplAw4W5ONCsERIoYKuyF8wBGurUAeo/ZycAZSn4HrKjgRKnSb9gKJBxaz8EkN0IAJS70AwLCqgGkPH+OhCQ0WgVKH0vtxTMBKqj0CkoIAEJSEACEpCAPEB1FDoFBSQgAQlIQAISkAeo6fegodFBgYxdC4gP1PRWY2oSHQLI3rLerAooEqhvlLgS3weiAwbajCoA9QfJBRpOouJAs83i/6OYDgScPk4gt1EAEFbHD+QzYgPBdYhAD42oQMPxRANZjNh7+X45SWcVyGLUyM+QlgGsNBj0vRgJiK2DATIatUdvGUl7OUoHBmQ3esaE2qqwOkigKaN7qSHQbHFUU/puPhaoghG2HZ3dkQQUb0TqQucHZQNRmQJGrjPMigGtSKWMU+coCkhAAhJQ4QhIQAISkIAKR0ACWssVE0LPfAqWUz0AAAAASUVORK5CYII="
+      }
+    ],
+    "imageData": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAIAAABt+uBvAAAAw0lEQVR4nO3QMQ2AMABE0ZrCBSs6WDGFGEYSLGCACQEkXUjg2rzkC7h75Tp3VSq/LwgPECBAgAAFBwgQIECAggMECBAgQMEBAgQIEKDgAAECBAhQcIAAfQy0TUPrAQIECBCg4AABAgQIUHCAAAECBCg4QIAANQz07FiX5F6+AwQIECBAgADl1gnQPA71AAECBAgQIECAAAECBAgQIECAAAECBAgQIECAAAH6F6jvAAECBAhQcIAAAQIEKDhAgAABAhTcDbA0P+T0rYNTAAAAAElFTkSuQmCC"
+  }
+]

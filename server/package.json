@@ -9,7 +9,8 @@
     "start": "node --env-file-if-exists=.env dist/main.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "node --test test/*.test.mjs",
-    "local:setup": "node --env-file-if-exists=.env scripts/local-setup.mjs"
+    "local:setup": "node --env-file-if-exists=.env scripts/local-setup.mjs",
+    "local:seed": "node --env-file-if-exists=.env scripts/seed-demo.mjs"
   },
   "dependencies": {
     "@babmatj/contracts": "0.1.0",
