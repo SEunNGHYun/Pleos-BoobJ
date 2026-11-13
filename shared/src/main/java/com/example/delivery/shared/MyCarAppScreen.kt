@@ -346,9 +346,15 @@ class MyCarAppScreen(carContext: CarContext) : Screen(carContext) {
         })
     }
 
-    private fun row(title: String, detail: String? = null, click: (() -> Unit)? = null): Row =
+    private fun row(
+        title: String,
+        detail: String? = null,
+        image: CarIcon? = null,
+        click: (() -> Unit)? = null,
+    ): Row =
         Row.Builder().setTitle(title).apply {
             if (detail != null) addText(detail)
+            if (image != null) setImage(image, Row.IMAGE_TYPE_LARGE)
             if (click != null) setOnClickListener { click() }
         }.build()
 
@@ -487,7 +493,10 @@ class MyCarAppScreen(carContext: CarContext) : Screen(carContext) {
                     val cards = ItemList.Builder()
                     fun card(title: String, detail: String, image: CarIcon?, action: () -> Unit) {
                         cards.addItem(GridItem.Builder().setTitle(title).setText(detail)
-                            .setImage(image ?: CarIcon.APP_ICON)
+                            .setImage(
+                                image ?: CarIcon.APP_ICON,
+                                if (image != null) GridItem.IMAGE_TYPE_LARGE else GridItem.IMAGE_TYPE_ICON,
+                            )
                             .setOnClickListener { action() }.build())
                     }
                     for (index in page * 3 until minOf(page * 3 + 3, restaurantOptions.length())) {
@@ -521,7 +530,10 @@ class MyCarAppScreen(carContext: CarContext) : Screen(carContext) {
                     val restaurant = restaurantOptions.getJSONObject(index)
                     val meters = restaurant.optInt("distanceMeters", -1)
                     val detail = if (meters < 0) "경로 거리 미확인" else "경유 총거리 ${meters / 1000.0} km"
-                    items.addItem(row(restaurant.getString("restaurantName"), detail) { loadCatalog(client, restaurant) })
+                    val image = imageIcon(restaurant.optString("imageData"))
+                    items.addItem(row(restaurant.getString("restaurantName"), detail, image) {
+                        loadCatalog(client, restaurant)
+                    })
                 }
                 if (restaurantOptions.length() == 0) items.addItem(row("주문 가능한 식당이 없습니다."))
                 if (restaurantOptions.length() > 3) items.addItem(row("다음 식당") {
@@ -614,7 +626,7 @@ class MyCarAppScreen(carContext: CarContext) : Screen(carContext) {
                     invalidate()
                 }
             }
-        imageIcon(selectedMenu?.optString("imageData"))?.let { menuRow.setImage(it) }
+        imageIcon(selectedMenu?.optString("imageData"))?.let { menuRow.setImage(it, Row.IMAGE_TYPE_LARGE) }
         val items = ItemList.Builder()
             .addItem(menuRow.build())
             .addItem(row("선택 메뉴 수량", "${quantity}개 · 누르면 0~5개 변경") {

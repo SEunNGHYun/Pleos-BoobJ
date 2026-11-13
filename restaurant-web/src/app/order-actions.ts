@@ -1,6 +1,6 @@
 'use server';
 
-import { PICKUP_LIFECYCLE_ACTIONS, type PickupLifecycleAction, type PickupLifecycleRequest, type AcceptOrderRequest, type OrderResponse, type MenuSelection, type RejectOrderRequest, type RestaurantOrdersResponse } from '@babmatj/contracts';
+import { PICKUP_LIFECYCLE_ACTIONS, type PickupLifecycleAction, type PickupLifecycleRequest, type AcceptOrderRequest, type OrderResponse, type MenuSelection, type RejectOrderRequest, type RestaurantOrdersResponse, type ManagedRestaurant } from '@babmatj/contracts';
 
 type Receipt = { action: 'accept'; body: AcceptOrderRequest } | { action: 'reject'; body: RejectOrderRequest }
  | { action: 'eta'; body: PickupLifecycleRequest & {eta: NonNullable<OrderResponse['eta']>} }
@@ -34,6 +34,10 @@ async function request<T>(path: string, token: string, body?: Receipt["body"] | 
 }
 
 const uuid = /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/i;
+
+export async function loadManagedRestaurants(token: string): Promise<Result<ManagedRestaurant[]>> {
+ return request('/api/restaurants/mine', token);
+}
 
 export async function loadOrders(restaurantId: string, token: string): Promise<Result<RestaurantOrdersResponse>> {
  if (!uuid.test(restaurantId)) return { error: '식당 ID를 확인해주세요.', retryable: false };

@@ -2,10 +2,12 @@
 
 두 화면은 같은 로컬 NestJS API와 PGlite DB를 사용한다. 메뉴·장소·주문 상태는 저장된 API 데이터다. 차량 ETA는 식당 화면에서 입력한 MOCK이며 예상 픽업은 ETA와 조리 예약 종료 중 늦은 시각이다. 식당 수락 시 배정한 공간과 시간 구간은 식당 목록에서 확인할 수 있다. 차량 예상 픽업 표시는 MOCK이며 공간의 실제 점유를 뜻하지 않는다.
 
+[차량용 릴리스 APK](../../소개/babmatj-automotive-release.apk)는 로컬 릴리스 키로 서명했다. 아래 로컬 주문 시연은 디버그 앱의 개발 계정 주입 방식으로 진행한다.
+
 ## 준비
 
 1. 루트에서 `npm run local:setup` 후 `npm run dev`를 실행한다. [식당 등록 예시](pickup.md#1-식당-등록)를 사용해 owner 토큰으로 메뉴와 픽업 장소가 있는 식당을 등록하고 식당 ID를 기록한다.
-2. `./gradlew :automotive:assembleDebug`로 APK를 빌드하고 Pleos Connect 에뮬레이터를 시작한다. `adb devices -l`에서 serial, `adb -s <serial> shell am get-current-user`에서 차량 사용자 번호를 확인한다.
+2. [차량용 디버그 APK](../../소개/babmatj-automotive-debug.apk)를 사용하거나 `./gradlew :automotive:assembleDebug`로 빌드하고 Pleos Connect 에뮬레이터를 시작한다. `adb devices -l`에서 serial, `adb -s <serial> shell am get-current-user`에서 차량 사용자 번호를 확인한다.
 3. 파일 권한을 제한한 로컬 JSON에 customer 토큰, 등록 응답의 식당 ID, 시연용 차량번호 및 연락처를 넣는다. 파일을 저장소에 추가하지 않는다.
 
 ```json
@@ -13,7 +15,7 @@
 ```
 
 ```sh
-adb -s <serial> install -r automotive/build/outputs/apk/debug/automotive-debug.apk
+adb -s <serial> install -r "소개/babmatj-automotive-debug.apk"
 adb -s <serial> reverse tcp:3001 tcp:3001
 adb -s <serial> shell 'run-as com.example.delivery --user <user> mkdir -p files'
 adb -s <serial> shell -T 'run-as com.example.delivery --user <user> sh -c "cat > files/pickup-demo.json"' < /private/path/pickup-demo.json
@@ -25,18 +27,16 @@ adb -s <serial> shell am start --user <user> -n com.example.delivery/androidx.ca
 ## 시연
 
 1. 차량에서 **주문 실행**을 눌러 카탈로그를 불러온다. 메뉴, 수량(1~5), 픽업 장소 행을 눌러 값을 선택하고 다시 주문 실행을 누른다. 주문 ID와 PENDING을 확인한다.
-2. [식당 웹](http://127.0.0.1:3000)의 **차량 주문**에서 식당 ID와 owner 개발 토큰을 입력해 목록을 조회한다. 동일 주문 ID를 확인한다.
+2. [식당 웹](http://127.0.0.1:3000)의 **차량 주문**에서 owner 개발 토큰을 입력하고 **내 식당 불러오기**를 누른다. 식당을 이름으로 고르면 주문 목록이 열린다. 담당 식당이 한 곳이면 자동으로 열린다. 차량 화면과 동일한 주문 ID를 확인한다.
 3. 조리시간과 MOCK 도착까지 남은 분을 입력해 수락하거나, 사유를 입력해 거절한다. 수락 후 ACCEPTED와 조리 시작 예정시각을 확인한다.
 4. 차량에서 **상태 새로고침**을 누른다. 같은 주문 ID에 ACCEPTED와 MOCK 예상 픽업, 또는 REJECTED와 거절 사유가 표시된다.
 5. 같은 주문을 두 식당 탭에서 먼저 조회한 뒤 한 탭에서 수락한다. 나머지 탭의 수락은 409 상태 변경 안내와 목록 갱신으로 이어진다. 연결 오류가 난 경우에는 같은 요청 키로 재시도한다.
 
-이 데모는 한 차량 주문을 추적한다. CANCELLED가 조회되면 양쪽에서 취소 상태를 표시한다. 취소는 식당에서 조리 시작·입장 전에 처리한다. Pleos 내비게이션 SDK 호출은 없으며, 차량 앱 화면은 기존 AndroidX Car App 호스트로 실행한다.
+이 데모는 한 차량 주문을 추적한다. CANCELLED가 조회되면 양쪽에서 취소 상태를 표시한다. 취소는 식당에서 조리 시작·입장 전에 처리한다. 현재 차량 앱은 Pleos 내비에서 위치와 목적지를 불러올 수 있다. 조리 일정은 식당이 입력한 MOCK ETA를 사용한다.
 
-## 검증 기록
+## 시연 기록
 
-Pleos Connect v2.1.0에서 비빔밥 2개와 지정 픽업 구역 A를 선택해 주문 `17168a36-ce59-459f-83eb-f11ed42b1521`을 생성했다. 차량과 식당 웹에 동일 ID와 PENDING이 표시됐다. 식당 웹의 수락 버튼으로 ACCEPTED를 저장하고 차량에서 새로고침해 동일 상태를 확인했다. 조리 시작 예정은 22:31:07 KST, MOCK 예상 픽업은 22:51:07 KST였다.
-
-첫 실행에서는 상태 갱신에 ListTemplate을 반복 사용해 차량 호스트의 화면 전환 제한에 걸렸다. 목록 행 제목을 유지하고 결과 화면을 PaneTemplate으로 분리한 후 새 주문으로 재검증했다. 웹·서버 빌드, 타입 검사, API 25건·DB 8건, 웹 연결·장애 스모크 테스트, 차량·모바일 디버그 빌드가 통과했다.
+11월 12일에 Pleos 차량 앱과 식당 웹에서 동일한 주문의 접수·조리·입장·인도 완료와 공간 반환을 확인했다. 수락 직후 내비에 픽업 구역이 표시됐으며, 원래 목적지를 유지한 경유지 확정은 미검증이다. [시연 화면](../../소개/flows/README.md) · [영상](../../소개/babmatj-pickup-demo.mp4)
 
 ## 수동 인도 시연
 

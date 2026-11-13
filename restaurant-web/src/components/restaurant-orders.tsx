@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import type { MenuSelection, OrderResponse, PickupLifecycleAction } from '@babmatj/contracts';
-import { loadMenus, loadOrders, saveMenuImage, submitReceipt } from '../app/order-actions';
+import type { ManagedRestaurant, MenuSelection, OrderResponse, PickupLifecycleAction } from '@babmatj/contracts';
+import { loadManagedRestaurants, loadMenus, loadOrders, saveMenuImage, submitReceipt } from '../app/order-actions';
 
 type PendingReceipt = {
  id: string;
@@ -14,8 +14,20 @@ const seoulTime = new Intl.DateTimeFormat('ko-KR', {
 });
 const displayTime = (iso: string) => `${seoulTime.format(new Date(iso))} KST`;
 
+function arrivalNotice(order: OrderResponse, now: number) {
+ if (order.orderStatus !== 'ACCEPTED' || order.cookingStatus !== 'SCHEDULED'
+  || !order.cookingReservation || !order.eta || order.pickupExpired) return null;
+ if (Date.parse(order.cookingReservation.plannedStartAt) > now) return null;
+
+ const remaining = Date.parse(order.eta.arrivalAt) - now;
+ if (remaining <= 0) return '차량의 도착 예정 시각이 지났습니다.';
+ if (remaining < 60_000) return '차량이 1분 이내에 도착할 예정입니다.';
+ return `차량이 약 ${Math.ceil(remaining / 60_000)}분 뒤 도착할 예정입니다.`;
+}
+
 export function RestaurantOrders() {
  const [restaurantId, setRestaurantId] = useState('');
+ const [restaurants, setRestaurants] = useState<ManagedRestaurant[]>([]);
  const [token, setToken] = useState('');
  const [orders, setOrders] = useState<OrderResponse[]>([]);
  const [menus, setMenus] = useState<MenuSelection[]>([]);
@@ -41,8 +53,8 @@ export function RestaurantOrders() {
   return () => { active = false; clearTimeout(timer); };
  }, [restaurantId, token, total, busy, pending]);
 
- async function refresh() {
-  const result = await loadOrders(restaurantId.trim(), token.trim());
+ async function refresh(id = restaurantId) {
+  const result = await loadOrders(id, token.trim());
   if ('error' in result) return result.error;
   setOrders(result.data.items);
   setTotal(result.data.total);
@@ -55,6 +67,27 @@ export function RestaurantOrders() {
   try { await work(); }
   catch { setError('서버에 연결할 수 없습니다. 같은 요청으로 다시 시도해주세요.'); }
   finally { setBusy(false); }
+ }
+
+ function selectRestaurant(id: string) {
+  setRestaurantId(id);
+  setOrders([]);
+  setMenus([]);
+  setTotal(null);
+ }
+
+ async function discoverRestaurants() {
+  selectRestaurant('');
+  setRestaurants([]);
+  const result = await loadManagedRestaurants(token.trim());
+  if ('error' in result) { setError(result.error); return; }
+  setRestaurants(result.data);
+  if (result.data.length === 0) setError('이 개발 토큰으로 관리할 수 있는 식당이 없습니다.');
+  if (result.data.length === 1) {
+   const {id} = result.data[0];
+   selectRestaurant(id);
+   setError(await refresh(id));
+  }
  }
 
  async function receipt(attempt: PendingReceipt) {
@@ -104,17 +137,37 @@ export function RestaurantOrders() {
   <h2 id="orders-title">차량 주문</h2>
   <form onSubmit={event => {
    event.preventDefault();
-   void run(async () => { setOrders([]); setTotal(null); setError(await refresh()); });
+   void run(discoverRestaurants);
   }}>
-   <label>식당 ID <input required value={restaurantId} disabled={busy || !!pending} onChange={event => { setRestaurantId(event.target.value); setOrders([]); setMenus([]); setTotal(null); }} /></label>
-   <label>개발 토큰 <input required type="password" autoComplete="off" value={token} disabled={busy || !!pending} onChange={event => { setToken(event.target.value); setOrders([]); setMenus([]); setTotal(null); }} /></label>
-   <button disabled={busy || !!pending}>주문 목록 새로고침</button>
+   <label>개발 토큰 <input required type="password" autoComplete="off" value={token} disabled={busy || !!pending} onChange={event => {
+    setToken(event.target.value);
+    setRestaurants([]);
+    selectRestaurant('');
+    setError('');
+   }} /></label>
+   <button disabled={busy || !!pending}>내 식당 불러오기</button>
   </form>
+  {restaurants.length > 0 && <form onSubmit={event => {
+   event.preventDefault();
+   void run(async () => setError(await refresh()));
+  }}>
+   <label>식당 <select required value={restaurantId} disabled={busy || !!pending} onChange={event => {
+    const id = event.target.value;
+    selectRestaurant(id);
+    if (id) void run(async () => setError(await refresh(id)));
+   }}>
+    <option value="">식당을 선택하세요</option>
+    {restaurants.map(restaurant => <option key={restaurant.id} value={restaurant.id}>
+     {restaurant.name} · {restaurant.address}
+    </option>)}
+   </select></label>
+   <button disabled={busy || !!pending || !restaurantId}>주문 목록 새로고침</button>
+  </form>}
   {error && <p role="alert">{error}</p>}
   {pending && <button disabled={busy} onClick={() => void run(() => receipt(pending))}>같은 주문 작업 재시도</button>}
   {total !== null && <p className="muted">최근 {orders.length}건 / 전체 {total}건</p>}
   <h3>메뉴 사진</h3>
-  <button type="button" disabled={busy || !!pending} onClick={() => void run(async () => {
+  <button type="button" disabled={busy || !!pending || !restaurantId} onClick={() => void run(async () => {
    const result = await loadMenus(restaurantId.trim(), token.trim());
    if ('error' in result) setError(result.error);
    else setMenus(result.data);
@@ -129,7 +182,9 @@ export function RestaurantOrders() {
    }} /></label>
    {menu.imageData && <button type="button" disabled={busy || !!pending} onClick={() => void run(() => changeMenuImage(menu.id))}>사진 삭제</button>}
   </div>)}
-  {orders.map(order => <article key={order.id} className="order-card">
+  {orders.map(order => {
+   const notice = arrivalNotice(order, Date.now());
+   return <article key={order.id} className="order-card">
    <h3>주문 <code>{order.id}</code></h3>
    <p>상태 <strong>{order.orderStatus === 'CANCELLED' ? 'CANCELLED · 주문 취소됨' : order.orderStatus}</strong></p>
    <p>{order.items.map(item => `${item.menuName} × ${item.quantity}`).join(', ')} · {order.pickupLocation.name}</p>
@@ -137,6 +192,7 @@ export function RestaurantOrders() {
    {order.pickupSpaceReservation && <p>예약 구간 {displayTime(order.pickupSpaceReservation.startAt)} ~ {displayTime(order.pickupSpaceReservation.endAt)}</p>}
    {order.orderStatus === 'COMPLETED' && <p>인도 완료 · 식당 수동 확인</p>}
    <p>조리 시작 예정 {order.cookingReservation ? displayTime(order.cookingReservation.plannedStartAt) : '미정'}</p>
+   {notice && <p className="arrival-notice" role="status">{notice}</p>}
    {order.eta && <p>MOCK 차량 ETA {displayTime(order.eta.arrivalAt)}</p>}
    {order.pickupExpired && <p>기존 예약 만료 · 입장 불가</p>}
    {order.etaProposal ? <p>운전자 확인 대기 · 제안 픽업 {displayTime(order.etaProposal.pickupAt)} · 제안 조리 시작 {displayTime(order.etaProposal.cookingStartAt)}</p>
@@ -194,6 +250,7 @@ export function RestaurantOrders() {
       manualAction(order, 'complete', '수동 인도 완료')}
     </>}
    </div>}
-  </article>)}
+  </article>;
+  })}
  </section>;
 }

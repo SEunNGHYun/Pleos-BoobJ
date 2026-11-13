@@ -131,6 +131,18 @@ export class PickupService {
   if(!result.rows[0])throw new NotFoundException('주문을 찾을 수 없습니다.');
   return this.orderResponse(tx,result.rows[0]);
  });}
+ async listManagedRestaurants(actor: string) {
+  return this.transaction(async tx => {
+   const result = await tx.query<{id: string; name: string; address: string}>(`
+    select r.id, r.name, r.address
+    from restaurant_members m
+    join restaurants r on r.id = m.restaurant_id
+    where m.user_id = $1 and m.role in ('OWNER', 'STAFF')
+    order by r.name, r.address, r.id
+   `, [actor]);
+   return result.rows;
+  });
+ }
  async listRestaurantOrders(actor:string,restaurantId:string,query:RestaurantOrdersQuery){
   return this.transaction(async tx=>{
    await this.requireMember(tx,actor,restaurantId);

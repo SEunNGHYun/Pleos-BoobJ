@@ -29,6 +29,24 @@ const restaurant=()=>({name:'밥맞식당',contactPhone:'+82212345678',address:'
 const order=(r)=>({restaurantId:r.id,pickupLocationId:r.pickupLocations[1].id,vehiclePlate:'12가3456',
  contactPhone:'+821012345678',requestKey:crypto.randomUUID(),items:[{menuId:r.menus[0].id,quantity:2}]});
 
+test('managed restaurant selection only lists the authenticated operator’s restaurants', async () => {
+ const f = await fixture();
+ try {
+  const owned = await f.request('POST', '/restaurants', f.owner, restaurant());
+  const other = await f.request('POST', '/restaurants', f.outsider, restaurant());
+  assert.equal(owned.status, 201);
+  assert.equal(other.status, 201);
+  const listed = await f.request('GET', '/restaurants/mine', f.owner);
+  assert.equal(listed.status, 200);
+  const {id, name, address} = owned.body;
+  assert.deepEqual(listed.body, [{id, name, address}]);
+  assert.deepEqual((await f.request('GET', '/restaurants/mine', f.customer)).body, []);
+  assert.equal((await f.request('GET', '/restaurants/mine', null)).status, 401);
+ } finally {
+  await f.close();
+ }
+});
+
 test('register restaurant and create an order with selected pickup snapshot and server-priced items',async()=>{
  const f=await fixture();try{
   assert.equal((await f.request('GET','/health',null)).body.database,'local_ready');

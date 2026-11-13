@@ -52,6 +52,11 @@ export interface AcceptOrderRequest {
 }
 export interface RejectOrderRequest {expectedVersion: number; requestKey: string; reason: string;}
 export interface RestaurantOrdersResponse {items: OrderResponse[]; total: number; limit: number; offset: number;}
+export interface ManagedRestaurant {
+ id: string;
+ name: string;
+ address: string;
+}
 
 export const PICKUP_LIFECYCLE_ACTIONS = ['start', 'ready', 'arrive', 'complete', 'cancel'] as const;
 export type PickupLifecycleAction = typeof PICKUP_LIFECYCLE_ACTIONS[number];

@@ -2,10 +2,11 @@
 
 .order-panel form{display:flex;flex-wrap:wrap;align-items:end;gap:12px;margin:14px 0}
 .order-panel label{display:grid;gap:5px;font-size:13px}
-.order-panel input{min-width:0;max-width:100%;border:1px solid var(--line);border-radius:7px;padding:9px}
+.order-panel input,.order-panel select{min-width:0;max-width:100%;border:1px solid var(--line);border-radius:7px;padding:9px}
 .order-panel input[type=number]{width:100px}
 .order-panel [role=alert]{color:#8c3224}
 .order-card{background:#fff;border:1px solid var(--line);border-radius:12px;margin-top:12px;padding:18px;overflow-wrap:anywhere}
 .order-card p{font-size:14px;margin:8px 0}
+.arrival-notice{padding:10px 12px;border-radius:7px;background:#edf3eb;color:var(--green);font-weight:600}
 
 .order-operations{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}

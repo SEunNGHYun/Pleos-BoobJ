@@ -2,6 +2,10 @@
 
 Pleos 차량 앱, 식당 웹, 중앙 서버, Supabase 스키마를 같은 프로젝트에서 관리하는 모노레포입니다.
 
+## 서비스 소개와 시연
+
+[서비스 소개](소개/README.md) · [차량용 서명된 릴리스 APK](소개/babmatj-automotive-release.apk) · [시연 영상](소개/babmatj-pickup-demo.mp4) · [흐름도](소개/흐름도.md) · [단계별 캡처](소개/flows/README.md)
+
 ## 구성
 
 | 경로 | 기술·역할 |
@@ -54,11 +58,11 @@ npm run start --workspace @babmatj/server
 npm run start --workspace @babmatj/restaurant-web
 ```
 
-Android는 기존과 동일하게 Android Studio 또는 `./gradlew :mobile:assembleDebug :automotive:assembleDebug`로 빌드합니다. 루트 npm build는 Android 빌드를 포함하지 않습니다.
+차량용 릴리스 APK는 루트에서 `./gradlew :automotive:assembleRelease`로 빌드합니다. 소개 폴더의 APK는 로컬 릴리스 키로 서명했습니다. 같은 앱의 업데이트에는 동일한 서명 키를 사용합니다. 로컬 주문 시연은 디버그 APK와 개발 계정 설정을 사용합니다. [시연 실행 안내](docs/api/two-screen-demo.md)
 
 ## 현재 구현 범위
 
-식당 웹 시작 화면, 중앙 서버 연결 상태/재시도, 식당·메뉴·픽업 위치 등록 API, 사용자 주문 생성·조회·픽업 장소 API, 식당 주문 목록·수락·거절 API, 공통 상태 계약을 제공합니다. 로컬 DB 설정은 `npm run local:setup` 후 `npm run dev`로 실행합니다. [차량 주문·식당 접수 시연](docs/api/two-screen-demo.md)은 로컬 DB와 MOCK ETA를 사용합니다. Supabase 호스팅/Auth 연결은 후속 작업입니다. 임의의 주문·매출·식당 fixture를 실제 데이터로 표시하지 않습니다.
+차량 앱은 목적지 기반 식당 검색, 메뉴·픽업 장소 선택, 주문 및 상태 조회를 지원합니다. 식당 웹은 주문 수락·거절, 조리 일정 및 공간 예약 확인, 수동 조리 시작·준비 완료·입장·인도 처리를 지원합니다. 시연은 로컬 DB와 MOCK ETA를 사용합니다. 호스팅 Supabase·Auth 연결은 후속 범위입니다.
 
 [API 입력·응답과 로컬 계정 사용 방법](docs/api/pickup.md) 및 [식당 주문 접수 API](docs/api/restaurant-receipt.md)를 참고하세요. 개발 계정 토큰은 `.local/credentials.json`에 저장되며 로컬 모드는 운영 환경에서 사용하지 않습니다.
 

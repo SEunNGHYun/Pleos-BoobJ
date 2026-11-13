@@ -10,6 +10,9 @@ export class PickupController {
  @Post('pickup/restaurant-options') @HttpCode(200)
  restaurantOptions(@Body()body:unknown){return this.service.rankPickupRestaurants(parse(routeRankingInput,body));}
  @Post('restaurants') register(@Req()req:ActorRequest,@Body()body:unknown){return this.service.registerRestaurant(req.actorId,parse(restaurantInput,body));}
+ @Get('restaurants/mine') myRestaurants(@Req()req:ActorRequest){
+  return this.service.listManagedRestaurants(req.actorId);
+ }
  @Get('restaurants/:id/pickup-locations') locations(@Param('id',new ParseUUIDPipe())id:string){return this.service.listLocations(id);}
  @Get('restaurants/:id/menus') menus(@Param('id',new ParseUUIDPipe())id:string){return this.service.listMenus(id);}
  @Post('restaurants/:id/menus/:menuId/image') @HttpCode(200)
