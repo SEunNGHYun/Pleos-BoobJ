@@ -2,12 +2,12 @@
 
 두 화면은 같은 로컬 NestJS API와 PGlite DB를 사용한다. 메뉴·장소·주문 상태는 저장된 API 데이터다. 차량 ETA는 식당 화면에서 입력한 MOCK이며 예상 픽업은 ETA와 조리 예약 종료 중 늦은 시각이다. 식당 수락 시 배정한 공간과 시간 구간은 식당 목록에서 확인할 수 있다. 차량 예상 픽업 표시는 MOCK이며 공간의 실제 점유를 뜻하지 않는다.
 
-[차량용 릴리스 APK](../../소개/babmatj-automotive-release.apk)는 로컬 릴리스 키로 서명했다. 아래 로컬 주문 시연은 디버그 앱의 개발 계정 주입 방식으로 진행한다.
+[차량용 릴리스 APK](../../apk/yunseunghyeon-babmatj-release.apk)는 로컬 릴리스 키로 서명했다. 아래 로컬 주문 시연은 디버그 앱의 개발 계정 주입 방식으로 진행한다.
 
 ## 준비
 
 1. 루트에서 `npm run local:setup` 후 `npm run dev`를 실행한다. [식당 등록 예시](pickup.md#1-식당-등록)를 사용해 owner 토큰으로 메뉴와 픽업 장소가 있는 식당을 등록하고 식당 ID를 기록한다.
-2. [차량용 디버그 APK](../../소개/babmatj-automotive-debug.apk)를 사용하거나 `./gradlew :automotive:assembleDebug`로 빌드하고 Pleos Connect 에뮬레이터를 시작한다. `adb devices -l`에서 serial, `adb -s <serial> shell am get-current-user`에서 차량 사용자 번호를 확인한다.
+2. `./gradlew :automotive:assembleDebug`로 차량용 디버그 APK를 빌드하고 Pleos Connect 에뮬레이터를 시작한다. `adb devices -l`에서 serial, `adb -s <serial> shell am get-current-user`에서 차량 사용자 번호를 확인한다.
 3. 파일 권한을 제한한 로컬 JSON에 customer 토큰, 등록 응답의 식당 ID, 시연용 차량번호 및 연락처를 넣는다. 파일을 저장소에 추가하지 않는다.
 
 ```json
@@ -15,7 +15,7 @@
 ```
 
 ```sh
-adb -s <serial> install -r "소개/babmatj-automotive-debug.apk"
+adb -s <serial> install -r automotive/build/outputs/apk/debug/automotive-debug.apk
 adb -s <serial> reverse tcp:3001 tcp:3001
 adb -s <serial> shell 'run-as com.example.delivery --user <user> mkdir -p files'
 adb -s <serial> shell -T 'run-as com.example.delivery --user <user> sh -c "cat > files/pickup-demo.json"' < /private/path/pickup-demo.json

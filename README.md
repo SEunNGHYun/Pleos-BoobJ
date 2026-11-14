@@ -1,10 +1,10 @@
-# 밥맞J 픽업형 MVP
+# 집밥 타이밍 · 밥맞J
 
-Pleos 차량 앱, 식당 웹, 중앙 서버, Supabase 스키마를 같은 프로젝트에서 관리하는 모노레포입니다.
+출발 전에 음식을 주문하고 식당을 경유지로 설정해, 이동 중 식당이 지정한 픽업 구역에서 차에서 내리지 않고 음식을 받는 Pleos 차량용 앱입니다.
 
 ## 서비스 소개와 시연
 
-[서비스 소개](소개/README.md) · [차량용 서명된 릴리스 APK](소개/babmatj-automotive-release.apk) · [시연 영상](소개/babmatj-pickup-demo.mp4) · [흐름도](소개/흐름도.md) · [단계별 캡처](소개/flows/README.md)
+[서비스 소개](소개/README.md) · [차량용 서명된 릴리스 APK](apk/yunseunghyeon-babmatj-release.apk) · [시연 영상](소개/babmatj-pickup-demo.mp4) · [흐름도](소개/흐름도.md) · [단계별 캡처](소개/flows/README.md)
 
 ## 구성
 
@@ -21,12 +21,24 @@ Pleos 차량 앱, 식당 웹, 중앙 서버, Supabase 스키마를 같은 프로
 
 JavaScript 영역은 npm workspaces, Android 영역은 기존 Gradle 프로젝트로 관리합니다. 루트 `package-lock.json`이 워크스페이스 의존성 기준입니다. `supabase/tests/package-lock.json`은 기존 DB 단독 테스트 실행을 위해 유지합니다.
 
-## 시작
+## 테스트 환경과 필요한 설정
 
-Node.js 22.9 이상과 npm이 필요합니다. 로컬 검증 환경은 Node.js 26입니다.
+| 항목 | 환경 |
+|---|---|
+| 차량 에뮬레이터 | Pleos Connect v2.1.0, Android API 34, ARM64 |
+| 화면 규격 | 가로 2560 × 1440 px, 160 dpi |
+| 빌드·실행 도구 | Android Studio, Android SDK 및 ADB, Node.js 22.9 이상과 npm. 로컬 웹·서버 검증에는 Node.js 26 사용 |
+| 주문 시연 | 로컬 PGlite DB, 식당·차량 개발 계정, ADB 포트 연결, 식당에서 입력한 MOCK ETA |
+| 경유 거리 조회 | 서버의 `KAKAO_FREE_ROUTING_KEY`와 Pleos 내비의 출발지·목적지 좌표 |
+
+## 실행 방법
+
+저장소 루트에서 시연 DB와 식당 데이터를 준비한 뒤 웹과 API를 시작합니다.
 
 ```sh
 npm ci
+npm run local:setup
+npm run local:seed
 npm run dev
 ```
 
@@ -58,7 +70,7 @@ npm run start --workspace @babmatj/server
 npm run start --workspace @babmatj/restaurant-web
 ```
 
-차량용 릴리스 APK는 루트에서 `./gradlew :automotive:assembleRelease`로 빌드합니다. 소개 폴더의 APK는 로컬 릴리스 키로 서명했습니다. 같은 앱의 업데이트에는 동일한 서명 키를 사용합니다. 로컬 주문 시연은 디버그 APK와 개발 계정 설정을 사용합니다. [시연 실행 안내](docs/api/two-screen-demo.md)
+차량용 릴리스 APK는 루트에서 `./gradlew :automotive:assembleRelease`로 빌드합니다. 제출용 서명 APK는 `apk/yunseunghyeon-babmatj-release.apk`에 있습니다. 같은 앱의 업데이트에는 동일한 서명 키를 사용합니다. 로컬 주문 시연은 `./gradlew :automotive:assembleDebug`로 빌드한 디버그 APK와 개발 계정 설정을 사용합니다. [시연 실행 안내](docs/api/two-screen-demo.md)
 
 ## 현재 구현 범위
 
